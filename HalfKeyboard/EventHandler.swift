@@ -18,6 +18,8 @@ final class EventHandler {
     // Private Properties
 
     private var eventTap: CFMachPort?
+    private var isSpaceDown: Bool = false
+    private var typedCharacterWhileSpaceWasDown: Bool = false
 
     // Lifecycle
 
@@ -56,24 +58,48 @@ final class EventHandler {
     }
 
     func handle(event: CGEvent, type: CGEventType) -> Unmanaged<CGEvent>? {
-        print(#function, event, event)
-        // The incoming keycode.
-        let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
-        if keyCode == kVK_Space {
-            print("space")
-        }
-
-        guard let newKeyCode = mapping[keyCode] else {
+        let typedKeyCode = event.getIntegerValueField(.keyboardEventKeycode)
+        guard typedKeyCode != kVK_Space else {
+            if type == .keyDown {
+                if isSpaceDown { return nil }
+                isSpaceDown = true
+                return nil
+            }
+            else if type == .keyUp {
+                isSpaceDown = false
+                if typedCharacterWhileSpaceWasDown {
+                    typedCharacterWhileSpaceWasDown = false
+                    return nil
+                }
+                else {
+                    // simulate a key down so we type a space when space is released
+                    return CGEvent(
+                        keyboardEventSource: CGEventSource(event: event),
+                        virtualKey: CGKeyCode(kVK_Space),
+                        keyDown: true
+                    ).map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
+                }
+            }
             return Unmanaged.passUnretained(event)
         }
 
-        let newEvent = CGEvent(
-            keyboardEventSource: CGEventSource(event: event),
-            virtualKey: CGKeyCode(newKeyCode),
-            keyDown: type == .keyDown
-        )
-        // fall back to original event if we failed to create a new one
-        return newEvent.map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
+        if isSpaceDown {
+            typedCharacterWhileSpaceWasDown = true
+            guard let newKeyCode = mapping[typedKeyCode] else {
+                return Unmanaged.passUnretained(event)
+            }
+
+            let newEvent = CGEvent(
+                keyboardEventSource: CGEventSource(event: event),
+                virtualKey: CGKeyCode(newKeyCode),
+                keyDown: type == .keyDown
+            )
+            // fall back to original event if we failed to create a new one
+            return newEvent.map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
+        }
+        else {
+            return Unmanaged.passUnretained(event)
+        }
     }
 
 }
