@@ -61,7 +61,8 @@ final class EventHandler {
         }
 
         let new = CGEvent(keyboardEventSource: CGEventSource(event: event), virtualKey: CGKeyCode(newKeyCode), keyDown: type == .keyDown)
-        return new.map(Unmanaged.passRetained)
+        // fall back to original event if we failed to create a new one
+        return new.map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
     }
 
 }
