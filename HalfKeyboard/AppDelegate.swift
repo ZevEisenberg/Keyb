@@ -14,11 +14,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
+        if EventHandler.shared.start() {
+            print("started event handler")
+        }
+        else {
+            print("error starting event handler")
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+        EventHandler.shared.stop()
     }
 
 
