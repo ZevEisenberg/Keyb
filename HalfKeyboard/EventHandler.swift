@@ -28,7 +28,14 @@ final class EventHandler {
     func start() -> Bool {
         let mask: CGEventMask = 1 << CGEventType.keyDown.rawValue | 1 << CGEventType.keyUp.rawValue | 1 << CGEventType.flagsChanged.rawValue
 
-        eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: mask, callback: eventTapCallback(_:_:_:_:), userInfo: Unmanaged.passUnretained(self).toOpaque())
+        eventTap = CGEvent.tapCreate(
+            tap: .cgSessionEventTap,
+            place: .headInsertEventTap,
+            options: .defaultTap,
+            eventsOfInterest: mask,
+            callback: eventTapCallback(_:_:_:_:),
+            userInfo: Unmanaged.passUnretained(self).toOpaque()
+        )
 
         guard let eventTap = eventTap else {
             print("Permission issue")
@@ -60,7 +67,11 @@ final class EventHandler {
             return Unmanaged.passUnretained(event)
         }
 
-        let new = CGEvent(keyboardEventSource: CGEventSource(event: event), virtualKey: CGKeyCode(newKeyCode), keyDown: type == .keyDown)
+        let new = CGEvent(
+            keyboardEventSource: CGEventSource(event: event),
+            virtualKey: CGKeyCode(newKeyCode),
+            keyDown: type == .keyDown
+        )
         // fall back to original event if we failed to create a new one
         return new.map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
     }
