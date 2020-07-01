@@ -142,5 +142,21 @@ private let mapping: [Int64: Int64] = [
     Int64(kVK_ANSI_Period): Int64(kVK_ANSI_X),
     Int64(kVK_Tab): Int64(kVK_Delete),
     Int64(kVK_ANSI_Backslash): Int64(kVK_Tab),
-    // TODO: punctuation, numbers, caps lock, return
+
+    // Top row
+    Int64(kVK_ANSI_Grave): Int64(kVK_ANSI_Minus),
+    Int64(kVK_ANSI_1): Int64(kVK_ANSI_0),
+    Int64(kVK_ANSI_2): Int64(kVK_ANSI_9),
+    Int64(kVK_ANSI_3): Int64(kVK_ANSI_8),
+    Int64(kVK_ANSI_4): Int64(kVK_ANSI_7),
+    Int64(kVK_ANSI_5): Int64(kVK_ANSI_6),
+    Int64(kVK_ANSI_6): Int64(kVK_ANSI_5),
+    Int64(kVK_ANSI_7): Int64(kVK_ANSI_4),
+    Int64(kVK_ANSI_8): Int64(kVK_ANSI_3),
+    Int64(kVK_ANSI_9): Int64(kVK_ANSI_2),
+    Int64(kVK_ANSI_0): Int64(kVK_ANSI_1),
+    Int64(kVK_ANSI_Minus): Int64(kVK_ANSI_Grave),
+    Int64(kVK_ANSI_Equal): Int64(kVK_ANSI_Grave),
+
+    // TODO: punctuation, caps lock, return
 ]
