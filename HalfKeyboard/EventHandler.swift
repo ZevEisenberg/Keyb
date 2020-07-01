@@ -140,5 +140,7 @@ private let mapping: [Int64: Int64] = [
     Int64(kVK_ANSI_N): Int64(kVK_ANSI_B),
     Int64(kVK_ANSI_M): Int64(kVK_ANSI_V),
     Int64(kVK_ANSI_Period): Int64(kVK_ANSI_X),
-    // TODO: return, delete, punctuation, numbers
+    Int64(kVK_Tab): Int64(kVK_Delete),
+    Int64(kVK_ANSI_Backslash): Int64(kVK_Tab),
+    // TODO: punctuation, numbers, caps lock, return
 ]
