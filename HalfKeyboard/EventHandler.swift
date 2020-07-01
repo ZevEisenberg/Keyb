@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import Carbon.HIToolbox
 
 final class EventHandler {
 
@@ -17,7 +18,6 @@ final class EventHandler {
     // Private Properties
 
     private var eventTap: CFMachPort?
-
 
     // Lifecycle
 
@@ -52,10 +52,15 @@ final class EventHandler {
         print(#function, event, event)
         // The incoming keycode.
         let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
-        print("key code:", keyCode)
+        if keyCode == kVK_Space {
+            print("space")
+        }
 
-        let lowercaseD = 2 as CGKeyCode
-        let new = CGEvent(keyboardEventSource: CGEventSource(event: event), virtualKey: lowercaseD, keyDown: type == .keyDown)
+        guard let newKeyCode = mapping[keyCode] else {
+            return Unmanaged.passUnretained(event)
+        }
+
+        let new = CGEvent(keyboardEventSource: CGEventSource(event: event), virtualKey: CGKeyCode(newKeyCode), keyDown: type == .keyDown)
         return new.map(Unmanaged.passRetained)
     }
 
@@ -66,3 +71,36 @@ private func eventTapCallback(_ proxy: CGEventTapProxy, _ type: CGEventType, _ e
     return handler.pointee.handle(event: event, type: type)
 }
 
+private let mapping: [Int64: Int64] = [
+    Int64(kVK_ANSI_A): Int64(kVK_ANSI_Semicolon),
+    Int64(kVK_ANSI_S): Int64(kVK_ANSI_L),
+    Int64(kVK_ANSI_D): Int64(kVK_ANSI_K),
+    Int64(kVK_ANSI_F): Int64(kVK_ANSI_J),
+    Int64(kVK_ANSI_H): Int64(kVK_ANSI_G),
+    Int64(kVK_ANSI_G): Int64(kVK_ANSI_H),
+    Int64(kVK_ANSI_Z): Int64(kVK_ANSI_Slash),
+    Int64(kVK_ANSI_X): Int64(kVK_ANSI_Period),
+    Int64(kVK_ANSI_C): Int64(kVK_ANSI_Comma),
+    Int64(kVK_ANSI_V): Int64(kVK_ANSI_M),
+    Int64(kVK_ANSI_B): Int64(kVK_ANSI_N),
+    Int64(kVK_ANSI_Q): Int64(kVK_ANSI_P),
+    Int64(kVK_ANSI_W): Int64(kVK_ANSI_O),
+    Int64(kVK_ANSI_E): Int64(kVK_ANSI_I),
+    Int64(kVK_ANSI_R): Int64(kVK_ANSI_U),
+    Int64(kVK_ANSI_Y): Int64(kVK_ANSI_T),
+    Int64(kVK_ANSI_T): Int64(kVK_ANSI_Y),
+    Int64(kVK_ANSI_O): Int64(kVK_ANSI_W),
+    Int64(kVK_ANSI_U): Int64(kVK_ANSI_R),
+    Int64(kVK_ANSI_I): Int64(kVK_ANSI_E),
+    Int64(kVK_ANSI_P): Int64(kVK_ANSI_Q),
+    Int64(kVK_ANSI_L): Int64(kVK_ANSI_S),
+    Int64(kVK_ANSI_J): Int64(kVK_ANSI_F),
+    Int64(kVK_ANSI_K): Int64(kVK_ANSI_D),
+    Int64(kVK_ANSI_Semicolon): Int64(kVK_ANSI_A),
+    Int64(kVK_ANSI_Comma): Int64(kVK_ANSI_C),
+    Int64(kVK_ANSI_Slash): Int64(kVK_ANSI_Z),
+    Int64(kVK_ANSI_N): Int64(kVK_ANSI_B),
+    Int64(kVK_ANSI_M): Int64(kVK_ANSI_V),
+    Int64(kVK_ANSI_Period): Int64(kVK_ANSI_X),
+    // TODO: return, delete, punctuation, numbers
+]
