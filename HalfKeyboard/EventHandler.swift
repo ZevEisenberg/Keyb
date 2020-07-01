@@ -58,8 +58,9 @@ final class EventHandler {
     }
 
     func handle(event: CGEvent, type: CGEventType) -> Unmanaged<CGEvent>? {
-        let typedKeyCode = event.getIntegerValueField(.keyboardEventKeycode)
-        guard typedKeyCode != kVK_Space else {
+        let typedKeyCode = Int(event.getIntegerValueField(.keyboardEventKeycode))
+        switch typedKeyCode {
+        case kVK_Space:
             if type == .keyDown {
                 if isSpaceDown { return nil }
                 isSpaceDown = true
@@ -81,24 +82,24 @@ final class EventHandler {
                 }
             }
             return Unmanaged.passUnretained(event)
-        }
+        default:
+            if isSpaceDown {
+                typedCharacterWhileSpaceWasDown = true
+                guard let newKeyCode = mapping[typedKeyCode] else {
+                    return Unmanaged.passUnretained(event)
+                }
 
-        if isSpaceDown {
-            typedCharacterWhileSpaceWasDown = true
-            guard let newKeyCode = mapping[typedKeyCode] else {
+                let newEvent = CGEvent(
+                    keyboardEventSource: CGEventSource(event: event),
+                    virtualKey: CGKeyCode(newKeyCode),
+                    keyDown: type == .keyDown
+                )
+                // fall back to original event if we failed to create a new one
+                return newEvent.map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
+            }
+            else {
                 return Unmanaged.passUnretained(event)
             }
-
-            let newEvent = CGEvent(
-                keyboardEventSource: CGEventSource(event: event),
-                virtualKey: CGKeyCode(newKeyCode),
-                keyDown: type == .keyDown
-            )
-            // fall back to original event if we failed to create a new one
-            return newEvent.map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
-        }
-        else {
-            return Unmanaged.passUnretained(event)
         }
     }
 
@@ -109,54 +110,54 @@ private func eventTapCallback(_ proxy: CGEventTapProxy, _ type: CGEventType, _ e
     return handler.pointee.handle(event: event, type: type)
 }
 
-private let mapping: [Int64: Int64] = [
-    Int64(kVK_ANSI_A): Int64(kVK_ANSI_Semicolon),
-    Int64(kVK_ANSI_S): Int64(kVK_ANSI_L),
-    Int64(kVK_ANSI_D): Int64(kVK_ANSI_K),
-    Int64(kVK_ANSI_F): Int64(kVK_ANSI_J),
-    Int64(kVK_ANSI_H): Int64(kVK_ANSI_G),
-    Int64(kVK_ANSI_G): Int64(kVK_ANSI_H),
-    Int64(kVK_ANSI_Z): Int64(kVK_ANSI_Slash),
-    Int64(kVK_ANSI_X): Int64(kVK_ANSI_Period),
-    Int64(kVK_ANSI_C): Int64(kVK_ANSI_Comma),
-    Int64(kVK_ANSI_V): Int64(kVK_ANSI_M),
-    Int64(kVK_ANSI_B): Int64(kVK_ANSI_N),
-    Int64(kVK_ANSI_Q): Int64(kVK_ANSI_P),
-    Int64(kVK_ANSI_W): Int64(kVK_ANSI_O),
-    Int64(kVK_ANSI_E): Int64(kVK_ANSI_I),
-    Int64(kVK_ANSI_R): Int64(kVK_ANSI_U),
-    Int64(kVK_ANSI_Y): Int64(kVK_ANSI_T),
-    Int64(kVK_ANSI_T): Int64(kVK_ANSI_Y),
-    Int64(kVK_ANSI_O): Int64(kVK_ANSI_W),
-    Int64(kVK_ANSI_U): Int64(kVK_ANSI_R),
-    Int64(kVK_ANSI_I): Int64(kVK_ANSI_E),
-    Int64(kVK_ANSI_P): Int64(kVK_ANSI_Q),
-    Int64(kVK_ANSI_L): Int64(kVK_ANSI_S),
-    Int64(kVK_ANSI_J): Int64(kVK_ANSI_F),
-    Int64(kVK_ANSI_K): Int64(kVK_ANSI_D),
-    Int64(kVK_ANSI_Semicolon): Int64(kVK_ANSI_A),
-    Int64(kVK_ANSI_Comma): Int64(kVK_ANSI_C),
-    Int64(kVK_ANSI_Slash): Int64(kVK_ANSI_Z),
-    Int64(kVK_ANSI_N): Int64(kVK_ANSI_B),
-    Int64(kVK_ANSI_M): Int64(kVK_ANSI_V),
-    Int64(kVK_ANSI_Period): Int64(kVK_ANSI_X),
-    Int64(kVK_Tab): Int64(kVK_Delete),
-    Int64(kVK_ANSI_Backslash): Int64(kVK_Tab),
+private let mapping: [Int: Int] = [
+    kVK_ANSI_A: kVK_ANSI_Semicolon,
+    kVK_ANSI_S: kVK_ANSI_L,
+    kVK_ANSI_D: kVK_ANSI_K,
+    kVK_ANSI_F: kVK_ANSI_J,
+    kVK_ANSI_H: kVK_ANSI_G,
+    kVK_ANSI_G: kVK_ANSI_H,
+    kVK_ANSI_Z: kVK_ANSI_Slash,
+    kVK_ANSI_X: kVK_ANSI_Period,
+    kVK_ANSI_C: kVK_ANSI_Comma,
+    kVK_ANSI_V: kVK_ANSI_M,
+    kVK_ANSI_B: kVK_ANSI_N,
+    kVK_ANSI_Q: kVK_ANSI_P,
+    kVK_ANSI_W: kVK_ANSI_O,
+    kVK_ANSI_E: kVK_ANSI_I,
+    kVK_ANSI_R: kVK_ANSI_U,
+    kVK_ANSI_Y: kVK_ANSI_T,
+    kVK_ANSI_T: kVK_ANSI_Y,
+    kVK_ANSI_O: kVK_ANSI_W,
+    kVK_ANSI_U: kVK_ANSI_R,
+    kVK_ANSI_I: kVK_ANSI_E,
+    kVK_ANSI_P: kVK_ANSI_Q,
+    kVK_ANSI_L: kVK_ANSI_S,
+    kVK_ANSI_J: kVK_ANSI_F,
+    kVK_ANSI_K: kVK_ANSI_D,
+    kVK_ANSI_Semicolon: kVK_ANSI_A,
+    kVK_ANSI_Comma: kVK_ANSI_C,
+    kVK_ANSI_Slash: kVK_ANSI_Z,
+    kVK_ANSI_N: kVK_ANSI_B,
+    kVK_ANSI_M: kVK_ANSI_V,
+    kVK_ANSI_Period: kVK_ANSI_X,
+    kVK_Tab: kVK_Delete,
+    kVK_ANSI_Backslash: kVK_Tab,
 
     // Top row
-    Int64(kVK_ANSI_Grave): Int64(kVK_ANSI_Minus),
-    Int64(kVK_ANSI_1): Int64(kVK_ANSI_0),
-    Int64(kVK_ANSI_2): Int64(kVK_ANSI_9),
-    Int64(kVK_ANSI_3): Int64(kVK_ANSI_8),
-    Int64(kVK_ANSI_4): Int64(kVK_ANSI_7),
-    Int64(kVK_ANSI_5): Int64(kVK_ANSI_6),
-    Int64(kVK_ANSI_6): Int64(kVK_ANSI_5),
-    Int64(kVK_ANSI_7): Int64(kVK_ANSI_4),
-    Int64(kVK_ANSI_8): Int64(kVK_ANSI_3),
-    Int64(kVK_ANSI_9): Int64(kVK_ANSI_2),
-    Int64(kVK_ANSI_0): Int64(kVK_ANSI_1),
-    Int64(kVK_ANSI_Minus): Int64(kVK_ANSI_Grave),
-    Int64(kVK_ANSI_Equal): Int64(kVK_ANSI_Grave),
+    kVK_ANSI_Grave: kVK_ANSI_Minus,
+    kVK_ANSI_1: kVK_ANSI_0,
+    kVK_ANSI_2: kVK_ANSI_9,
+    kVK_ANSI_3: kVK_ANSI_8,
+    kVK_ANSI_4: kVK_ANSI_7,
+    kVK_ANSI_5: kVK_ANSI_6,
+    kVK_ANSI_6: kVK_ANSI_5,
+    kVK_ANSI_7: kVK_ANSI_4,
+    kVK_ANSI_8: kVK_ANSI_3,
+    kVK_ANSI_9: kVK_ANSI_2,
+    kVK_ANSI_0: kVK_ANSI_1,
+    kVK_ANSI_Minus: kVK_ANSI_Grave,
+    kVK_ANSI_Equal: kVK_ANSI_Grave,
 
     // TODO: punctuation, caps lock, return
 ]
