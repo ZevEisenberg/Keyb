@@ -16,6 +16,8 @@ This is a rough proof-of-concept that I threw together in a few hours. I got the
 
 There are some non-letter keys that are poorly supported or unsupported. See code comments for details. There are also some bugs, such as the inability to use certain keyboard shortcuts that involve the spacebar. But basic typing should work, and depending on which hand you use, it could already be useful to you as a coder or writer. If you notice a bug or missing letter, please file a bug so we can track what needs to be done.
 
+The app has been tested only with a US-English QWERTY layout. It shouldn’t be too hard to add other layout support, though. You’d have to add another mapping table in code, and figure out a way to select the mapping table based on the system’s currently selected keyboard layout.
+
 ## Future
 
 It would be great to add a real UI and tutorial. But even better, it would be great if operating system venders added this as an accessibility feature. I’m releasing it under the MIT license in the hopes that they (or a third party) will take the idea and run with it. It’s easy enough to run it as an app, but building it into the system would be pretty slick.
