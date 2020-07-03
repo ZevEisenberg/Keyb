@@ -30,8 +30,11 @@ final class EventHandler {
 
     func start() -> Bool {
         guard !isRunning else { return true }
+
+        // Intercept keyDown, keyUp, and flagsChanged events
         let mask: CGEventMask = 1 << CGEventType.keyDown.rawValue | 1 << CGEventType.keyUp.rawValue | 1 << CGEventType.flagsChanged.rawValue
 
+        // Set up the tap to intercept events
         eventTap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
             place: .headInsertEventTap,
@@ -46,6 +49,7 @@ final class EventHandler {
             return false
         }
 
+        // Enable the tap
         let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
@@ -65,6 +69,7 @@ final class EventHandler {
         let typedKeyCode = Int(event.getIntegerValueField(.keyboardEventKeycode))
         switch typedKeyCode {
         case kVK_Space:
+            // If it's the spacebar, handle logic around flipping the keyboard or just typing a regular space
             if type == .keyDown {
                 if isSpaceDown { return nil }
                 isSpaceDown = true
@@ -88,11 +93,15 @@ final class EventHandler {
             return Unmanaged.passUnretained(event)
         default:
             if isSpaceDown {
+                // Space is currently pressed, so flip the keyboard using the mapping table
                 typedCharacterWhileSpaceWasDown = true
+
+                // Get the flipped-layout character from the mapping table
                 guard let newKeyCode = mapping[typedKeyCode] else {
                     return Unmanaged.passUnretained(event)
                 }
 
+                // Construct a new event, as though the user had typed the flipped key
                 let newEvent = CGEvent(
                     keyboardEventSource: CGEventSource(event: event),
                     virtualKey: CGKeyCode(newKeyCode),
@@ -102,6 +111,7 @@ final class EventHandler {
                 return newEvent.map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
             }
             else {
+                // Space isn't down, so pass through the original keypress without changing it
                 return Unmanaged.passUnretained(event)
             }
         }
