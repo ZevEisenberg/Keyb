@@ -14,12 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        if EventHandler.shared.start() {
-            print("started event handler")
-        }
-        else {
-            print("error starting event handler")
-        }
+        
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

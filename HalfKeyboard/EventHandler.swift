@@ -17,6 +17,7 @@ final class EventHandler {
 
     // Private Properties
 
+    private var isRunning = false
     private var eventTap: CFMachPort?
     private var isSpaceDown: Bool = false
     private var typedCharacterWhileSpaceWasDown: Bool = false
@@ -28,6 +29,7 @@ final class EventHandler {
     }
 
     func start() -> Bool {
+        guard !isRunning else { return true }
         let mask: CGEventMask = 1 << CGEventType.keyDown.rawValue | 1 << CGEventType.keyUp.rawValue | 1 << CGEventType.flagsChanged.rawValue
 
         eventTap = CGEvent.tapCreate(
@@ -47,14 +49,16 @@ final class EventHandler {
         let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
+        isRunning = true
         return true
     }
 
     func stop() {
-        guard eventTap != nil else { return }
+        guard eventTap != nil, isRunning else { return }
         // TODO: do this in Obj-C to catch thrown errors
         CFMachPortInvalidate(eventTap);
         eventTap = nil
+        isRunning = false
     }
 
     func handle(event: CGEvent, type: CGEventType) -> Unmanaged<CGEvent>? {

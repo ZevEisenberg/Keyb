@@ -17,10 +17,25 @@ class ViewController: NSViewController {
 
     override var representedObject: Any? {
         didSet {
-        // Update the view, if already loaded.
+            // Update the view, if already loaded.
         }
     }
 
+    @IBAction func checkBoxChanged(_ sender: NSButton) {
+        switch sender.state {
+        case .on:
+            if EventHandler.shared.start() {
+                print("started event handler")
+            }
+            else {
+                print("error starting event handler")
+            }
+        case .off, .mixed:
+            fallthrough
+        default:
+            EventHandler.shared.stop()
+        }
+    }
 
 }
 
