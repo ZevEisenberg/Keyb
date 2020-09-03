@@ -285,6 +285,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zeveisenberg.HalfKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -307,6 +308,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zeveisenberg.HalfKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
