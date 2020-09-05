@@ -34,13 +34,21 @@ final class EventHandler {
         // Intercept keyDown, keyUp, and flagsChanged events
         let mask: CGEventMask = 1 << CGEventType.keyDown.rawValue | 1 << CGEventType.keyUp.rawValue | 1 << CGEventType.flagsChanged.rawValue
 
+        let myCallbackTrampoline: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, userInfo: UnsafeMutableRawPointer?) in
+            guard let userInfo = userInfo else {
+                return Unmanaged.passRetained(event)
+            }
+            let unsafeSelf = Unmanaged<EventHandler>.fromOpaque(userInfo).takeUnretainedValue()
+            return unsafeSelf.handle(event: event, type: type)
+        }
+
         // Set up the tap to intercept events
         eventTap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
             place: .headInsertEventTap,
             options: .defaultTap,
             eventsOfInterest: mask,
-            callback: eventTapCallback(_:_:_:_:),
+            callback: myCallbackTrampoline,
             userInfo: Unmanaged.passUnretained(self).toOpaque()
         )
 
@@ -117,11 +125,6 @@ final class EventHandler {
         }
     }
 
-}
-
-private func eventTapCallback(_ proxy: CGEventTapProxy, _ type: CGEventType, _ event: CGEvent, _ refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
-    guard let handler = refcon?.assumingMemoryBound(to: EventHandler.self) else { return Unmanaged.passUnretained(event) }
-    return handler.pointee.handle(event: event, type: type)
 }
 
 private let mapping: [Int: Int] = [
