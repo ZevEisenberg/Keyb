@@ -97,6 +97,7 @@
 				TargetAttributes = {
 					CD3978AD24AD1FE100BFCB0D = {
 						CreatedOnToolsVersion = 12.0;
+						LastSwiftMigration = 1160;
 					};
 				};
 			};
@@ -293,6 +294,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zeveisenberg.HalfKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -317,6 +319,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zeveisenberg.HalfKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
