@@ -1,5 +1,7 @@
 # Half Keyboard
 
+<img src="./HalfKeyboard/Assets.xcassets/AppIcon.appiconset/Mac%20App%20128pt@2x.png" width=128 alt="Half Keyboard app icon" />
+
 This is a proof-of-concept app that lets you type more easily with one hand on a Mac. It was inspired by the concept of a [half-QWERTY keyboard](https://www.billbuxton.com/matias93.html), plus the need to be able to type with one hand while [holding a baby](https://twitter.com/zeveisenberg/status/1268585275346898950). If you often find yourself typing with one hand, this app may be useful to you.
 
 ## Usage
@@ -23,3 +25,6 @@ The app has been tested only with a US-English QWERTY layout. It shouldn’t be 
 It would be great to add a real UI and tutorial. But even better, it would be great if operating system venders added this as an accessibility feature. I’m releasing it under the MIT license in the hopes that they (or a third party) will take the idea and run with it. It’s easy enough to run it as an app, but building it into the system would be pretty slick.
 
 (If you decide to do this, you might want to check with [Matias](https://matias.ca/halfkeyboard/) to see if they have any annoying patents or copyrights.)
+
+## Credits
+Icon uses assets created by Herbert Spencer from the Noun Project.
