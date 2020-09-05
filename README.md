@@ -23,3 +23,6 @@ The app has been tested only with a US-English QWERTY layout. It shouldn’t be 
 It would be great to add a real UI and tutorial. But even better, it would be great if operating system venders added this as an accessibility feature. I’m releasing it under the MIT license in the hopes that they (or a third party) will take the idea and run with it. It’s easy enough to run it as an app, but building it into the system would be pretty slick.
 
 (If you decide to do this, you might want to check with [Matias](https://matias.ca/halfkeyboard/) to see if they have any annoying patents or copyrights.)
+
+## Credits
+Icon uses assets created by Herbert Spencer from the Noun Project.
