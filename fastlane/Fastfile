@@ -39,7 +39,7 @@ platform :mac do
       tag_name: the_tag,
       name: the_tag,
       description: "", # easier to enter release notes on GitHub
-      upload_assets: ["build/HalfKeyboard.app.zip"]
+      upload_assets: ["build/HalfKeyboard.app.zip", "build/HalfKeyboard.app.dSYM.zip"]
     )
   end
 end
