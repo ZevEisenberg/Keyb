@@ -7,4 +7,4 @@
 //
 // To commit changes to this file, stop ignoring it with git update-index --no-skip-worktree path_to_this_file
 
-HALFKEYBOARD_BUILD_NUMBER = 31-main
+HALFKEYBOARD_BUILD_NUMBER = 1.0
