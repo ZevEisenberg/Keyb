@@ -1,6 +1,6 @@
 # Half Keyboard
 
-<img src="./HalfKeyboard/Assets.xcassets/AppIcon.appiconset/Mac%20App%20128pt@2x.png" width=128 alt="Half Keyboard app icon" />
+<img src="./HalfKeyboard/Resources/Assets.xcassets/AppIcon.appiconset/Mac%20App%20128pt@2x.png" width=128 alt="Half Keyboard app icon" />
 
 This is a proof-of-concept app that lets you type more easily with one hand on a Mac. It was inspired by the concept of a [half-QWERTY keyboard](https://www.billbuxton.com/matias93.html), plus the need to be able to type with one hand while [holding a baby](https://twitter.com/zeveisenberg/status/1268585275346898950). If you often find yourself typing with one hand, this app may be useful to you.
 
