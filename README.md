@@ -6,7 +6,7 @@ This is a proof-of-concept app that lets you type more easily with one hand on a
 
 ## Usage
 
-You will need to grant accessibility permissions for the app to work. There is limited UI to help you with this, but if you’re using Catalina or later, you know what’s up. ⚠️ **You will have to relaunch the app after enabling permissions.**
+Download the [latest release](https://github.com/ZevEisenberg/HalfKeyboard/releases/latest/download/HalfKeyboard.app.zip) or build it from source. You will need to grant accessibility permissions for the app to work. There is limited UI to help you with this, but if you’re using Catalina or later, you know what’s up. ⚠️ **You will have to relaunch the app after enabling permissions.**
 
 The app works by mirroring the keyboard left-to-right when the spacebar is held down. After enabling the app, put one hand on the keyboard and type normally. When you would use the other hand, simply hold the spacebar while making the equivalent motion with the hand that's on the keyboard. Try it for a few minutes and you should get the hang of it. Try it for a few hours and you’ll probably be able to touch-type.
 
