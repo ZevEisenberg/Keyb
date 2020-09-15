@@ -17,7 +17,29 @@ default_platform(:mac)
 
 platform :mac do
   desc "Signs a build with Developer ID for distribution on GitHub."
-  lane :release do
-    # add actions here: https://docs.fastlane.tools/actions
+  lane :release do |options|
+    the_tag = options[:tag] || UI.user_error!("No tag provided. Pass a tag like tag:1.2.3")
+    build_mac_app(
+      scheme: "HalfKeyboard",
+      clean: true,
+      output_directory: "build",
+      skip_package_pkg: true, # https://github.com/fastlane/fastlane/issues/15963
+      export_options: {
+        method: "developer-id",
+        signingStyle: "automatic"
+      }
+    )
+    zip(
+      path: "build/HalfKeyboard.app",
+      output_path: "build/HalfKeyboard.app.zip"
+    )
+    github_release = set_github_release(
+      repository_name: "ZevEisenberg/HalfKeyboard",
+      api_token: ENV["GITHUB_TOKEN"],
+      tag_name: the_tag,
+      name: the_tag,
+      description: "", # easier to enter release notes on GitHub
+      upload_assets: ["build/HalfKeyboard.app.zip"]
+    )
   end
 end
