@@ -180,7 +180,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "source .env.ruby\nruby \"$SRCROOT/Scripts/buildnumber.rb\"\n";
+			shellScript = "source .env.ruby\nruby \"$SRCROOT/HalfKeyboard/Scripts/buildnumber.rb\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
