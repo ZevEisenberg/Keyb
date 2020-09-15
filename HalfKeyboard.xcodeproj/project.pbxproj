@@ -58,12 +58,20 @@
 				CD3978B124AD1FE100BFCB0D /* AppDelegate.swift */,
 				CD3978B324AD1FE100BFCB0D /* ViewController.swift */,
 				CD3978C124AD274900BFCB0D /* EventHandler.swift */,
+				CD4CAA742510F4570002D69B /* Resources */,
+			);
+			path = HalfKeyboard;
+			sourceTree = "<group>";
+		};
+		CD4CAA742510F4570002D69B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
 				CD3978B524AD1FE100BFCB0D /* Assets.xcassets */,
 				CD3978B724AD1FE100BFCB0D /* Main.storyboard */,
 				CD3978BA24AD1FE100BFCB0D /* Info.plist */,
 				CD3978BB24AD1FE100BFCB0D /* HalfKeyboard.entitlements */,
 			);
-			path = HalfKeyboard;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,13 +286,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = HalfKeyboard/HalfKeyboard.entitlements;
+				CODE_SIGN_ENTITLEMENTS = HalfKeyboard/Resources/HalfKeyboard.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 2KJHM26Y46;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = HalfKeyboard/Info.plist;
+				INFOPLIST_FILE = HalfKeyboard/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -303,13 +311,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = HalfKeyboard/HalfKeyboard.entitlements;
+				CODE_SIGN_ENTITLEMENTS = HalfKeyboard/Resources/HalfKeyboard.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 2KJHM26Y46;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = HalfKeyboard/Info.plist;
+				INFOPLIST_FILE = HalfKeyboard/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
