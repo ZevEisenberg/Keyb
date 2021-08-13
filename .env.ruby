@@ -1,9 +1,7 @@
 # Adapted from https://mgrebenets.github.io/xcode/2019/04/04/xcode-build-phases-and-environment
+# And further modified to switch from rvm to rbenbv
 
-export PATH="$HOME/.rvm/bin:$PATH" # Add RVM to PATH for scripting. 
+export PATH="$HOME/.rbenv/shims:$PATH" # Add rbenv to PATH for scripting.
 
-# Read Ruby version for the project from .ruby-version. 
-RUBY_VERSION="$(cat .ruby-version)" 
-
-# Source the Ruby environment for selected Ruby version. 
-source "$(rvm "${RUBY_VERSION}" do rvm env --path | tail -n1)"
+# Set up rbenv
+eval "$(rbenv init -)"
