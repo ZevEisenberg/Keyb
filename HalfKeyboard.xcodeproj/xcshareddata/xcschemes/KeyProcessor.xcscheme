@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1170"
+   LastUpgradeVersion = "1250"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CD3978AD24AD1FE100BFCB0D"
-               BuildableName = "HalfKeyboard.app"
-               BlueprintName = "HalfKeyboard"
-               ReferencedContainer = "container:HalfKeyboard.xcodeproj">
+               BlueprintIdentifier = "KeyProcessor"
+               BuildableName = "KeyProcessor"
+               BlueprintName = "KeyProcessor"
+               ReferencedContainer = "container:Packages">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -50,16 +50,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CD3978AD24AD1FE100BFCB0D"
-            BuildableName = "HalfKeyboard.app"
-            BlueprintName = "HalfKeyboard"
-            ReferencedContainer = "container:HalfKeyboard.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -67,16 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CD3978AD24AD1FE100BFCB0D"
-            BuildableName = "HalfKeyboard.app"
-            BlueprintName = "HalfKeyboard"
-            ReferencedContainer = "container:HalfKeyboard.xcodeproj">
+            BlueprintIdentifier = "KeyProcessor"
+            BuildableName = "KeyProcessor"
+            BlueprintName = "KeyProcessor"
+            ReferencedContainer = "container:Packages">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

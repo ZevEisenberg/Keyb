@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,7 @@
 		CD3978B624AD1FE100BFCB0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD3978B524AD1FE100BFCB0D /* Assets.xcassets */; };
 		CD3978B924AD1FE100BFCB0D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD3978B724AD1FE100BFCB0D /* Main.storyboard */; };
 		CD3978C224AD274900BFCB0D /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3978C124AD274900BFCB0D /* EventHandler.swift */; };
+		CD7B2C0526C7229800BC77BB /* KeyProcessor in Frameworks */ = {isa = PBXBuildFile; productRef = CD7B2C0426C7229800BC77BB /* KeyProcessor */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		CD4CAA762510F4FA0002D69B /* BuildNumber.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BuildNumber.xcconfig; sourceTree = "<group>"; };
 		CD4CAA792510F8770002D69B /* Global.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Global.xcconfig; sourceTree = "<group>"; };
 		CD4CAA7B2510F9A30002D69B /* buildnumber.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = buildnumber.rb; sourceTree = "<group>"; };
+		CD7B2C0026C7104400BC77BB /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Packages; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD7B2C0526C7229800BC77BB /* KeyProcessor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,8 +45,10 @@
 		CD3978A524AD1FE100BFCB0D = {
 			isa = PBXGroup;
 			children = (
+				CD7B2C0026C7104400BC77BB /* Packages */,
 				CD3978B024AD1FE100BFCB0D /* HalfKeyboard */,
 				CD3978AF24AD1FE100BFCB0D /* Products */,
+				CD7B2C0126C7221A00BC77BB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,6 +101,13 @@
 			path = Scripts;
 			sourceTree = "<group>";
 		};
+		CD7B2C0126C7221A00BC77BB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -113,6 +125,9 @@
 			dependencies = (
 			);
 			name = HalfKeyboard;
+			packageProductDependencies = (
+				CD7B2C0426C7229800BC77BB /* KeyProcessor */,
+			);
 			productName = HalfKeyboard;
 			productReference = CD3978AE24AD1FE100BFCB0D /* HalfKeyboard.app */;
 			productType = "com.apple.product-type.application";
@@ -402,6 +417,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CD7B2C0426C7229800BC77BB /* KeyProcessor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = KeyProcessor;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CD3978A624AD1FE100BFCB0D /* Project object */;
 }
