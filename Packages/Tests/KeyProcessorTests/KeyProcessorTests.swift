@@ -61,18 +61,18 @@ private extension KeyProcessor {
                 keyDown: type.isKeyDown
             ).map(Unmanaged.passRetained)
         )
-        let event = process(event: fakeEvent.takeUnretainedValue(), type: type.eventType)?.takeRetainedValue()
+        let events = process(event: fakeEvent.takeUnretainedValue(), type: type.eventType)
         if let expected = expected {
-            if let event = event {
-                XCTAssertEqual(event.getIntegerValueField(.keyboardEventKeycode), Int64(expected.keyCode), "keycode not equal", file: file, line: line)
-                XCTAssertEqual(event.type.humanReadable, expected.type.humanReadable, "event type not equal", file: file, line: line)
+            if let mainEvent = events?.main?.takeUnretainedValue() {
+                XCTAssertEqual(mainEvent.getIntegerValueField(.keyboardEventKeycode), Int64(expected.keyCode), "keycode not equal", file: file, line: line)
+                XCTAssertEqual(mainEvent.type.humanReadable, expected.type.humanReadable, "event type not equal", file: file, line: line)
             }
             else {
                 XCTFail("Got nil, but expected \(expected)")
             }
         }
         else {
-            XCTAssertNil(event)
+            XCTAssertNil(events)
         }
     }
 }

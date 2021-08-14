@@ -32,7 +32,13 @@ final class EventHandler {
                 return Unmanaged.passRetained(event)
             }
             let unsafeProcessor = Unmanaged<KeyProcessor>.fromOpaque(userInfo).takeUnretainedValue()
-            return unsafeProcessor.process(event: event, type: type)
+            let events = unsafeProcessor.process(event: event, type: type)
+            events?.extras.forEach { event in
+                DispatchQueue.main.async {
+                    event.takeRetainedValue().post(tap: .cgSessionEventTap)
+                }
+            }
+            return events?.main
         }
 
         // Set up the tap to intercept events

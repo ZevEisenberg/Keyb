@@ -1,12 +1,26 @@
 import Carbon.HIToolbox
 
+public struct Events {
+    public let main: Unmanaged<CGEvent>?
+    public let extras: [Unmanaged<CGEvent>]
+
+    public init(_ main: Unmanaged<CGEvent>?) {
+        self.init(main, extras: [])
+    }
+
+    public init(_ main: Unmanaged<CGEvent>? = nil, extras: [Unmanaged<CGEvent>] = []) {
+        self.main = main
+        self.extras = extras
+    }
+}
+
 public final class KeyProcessor {
     private var isSpaceDown = false
     private var typedCharacterWhileSpaceWasDown = false
 
     public init() {}
 
-    public func process(event: CGEvent, type: CGEventType) -> Unmanaged<CGEvent>? {
+    public func process(event: CGEvent, type: CGEventType) -> Events? {
         let typedKeyCode = Int(event.getIntegerValueField(.keyboardEventKeycode))
         switch typedKeyCode {
         case kVK_Space:
@@ -28,10 +42,10 @@ public final class KeyProcessor {
                         keyboardEventSource: CGEventSource(event: event),
                         virtualKey: CGKeyCode(kVK_Space),
                         keyDown: true
-                    ).map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
+                    ).map(Unmanaged.passRetained).map(Events.init) ?? Events(Unmanaged.passUnretained(event))
                 }
             }
-            return Unmanaged.passUnretained(event)
+            return Events(Unmanaged.passUnretained(event))
         default:
             if isSpaceDown {
                 // Space is currently pressed, so flip the keyboard using the mapping table
@@ -39,7 +53,7 @@ public final class KeyProcessor {
 
                 // Get the flipped-layout character from the mapping table
                 guard let newKeyCode = mapping[typedKeyCode] else {
-                    return Unmanaged.passUnretained(event)
+                    return Events(Unmanaged.passUnretained(event))
                 }
 
                 // Construct a new event, as though the user had typed the flipped key
@@ -49,11 +63,11 @@ public final class KeyProcessor {
                     keyDown: type == .keyDown
                 )
                 // fall back to original event if we failed to create a new one
-                return newEvent.map(Unmanaged.passRetained) ?? Unmanaged.passUnretained(event)
+                return newEvent.map(Unmanaged.passRetained).map(Events.init) ?? Events(Unmanaged.passUnretained(event))
             }
             else {
                 // Space isn't down, so pass through the original keypress without changing it
-                return Unmanaged.passUnretained(event)
+                return Events(Unmanaged.passUnretained(event))
             }
         }
     }
