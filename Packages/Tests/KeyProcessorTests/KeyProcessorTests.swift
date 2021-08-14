@@ -6,29 +6,29 @@ final class KeyProcessorTests: XCTestCase {
 
     func testLefRegularKeyDown() throws {
         let sut = KeyProcessor()
-        try sut.assert(keyCode: kVK_ANSI_A, type: .keyDown, expected: (kVK_ANSI_A, .keyDown))
-        try sut.assert(keyCode: kVK_ANSI_A, type: .keyUp, expected: (kVK_ANSI_A, .keyUp))
+        try sut.assert(keyCode: kVK_ANSI_A, type: .keyDown, expected: [(kVK_ANSI_A, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_A, type: .keyUp, expected: [(kVK_ANSI_A, .keyUp)])
     }
 
     func testRightRegularKeyDown() throws {
         let sut = KeyProcessor()
-        try sut.assert(keyCode: kVK_ANSI_O, type: .keyDown, expected: (kVK_ANSI_O, .keyDown))
-        try sut.assert(keyCode: kVK_ANSI_O, type: .keyUp, expected: (kVK_ANSI_O, .keyUp))
+        try sut.assert(keyCode: kVK_ANSI_O, type: .keyDown, expected: [(kVK_ANSI_O, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_O, type: .keyUp, expected: [(kVK_ANSI_O, .keyUp)])
     }
 
     func testSpacebar() throws {
         XCTExpectFailure("Spacebar is currently faking it by sending .keyDown when the user does a keyUp. Works because typing happens on key down, not key up, but it probably leaves the OS in a confused state because it thinks the spacebar is down. Will fix in a future change.")
         let sut = KeyProcessor()
-        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: nil)
-        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: (kVK_Space, .keyUp))
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
     }
 
     func testLeftFlippedKeyDown() throws {
         let sut = KeyProcessor()
-        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: nil)
-        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: (kVK_ANSI_L, .keyDown))
-        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: (kVK_ANSI_L, .keyUp))
-        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: nil)
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_L, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_L, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
     }
 
 }
@@ -53,26 +53,25 @@ private enum EventType {
 }
 
 private extension KeyProcessor {
-    func assert(keyCode: Int, type: EventType, expected: (keyCode: Int, type: CGEventType)?, file: StaticString = #filePath, line: UInt = #line) throws {
-        let fakeEvent = try XCTUnwrap(
+    func assert(keyCode: Int, type: EventType, expected: [(keyCode: Int, type: CGEventType)], file: StaticString = #filePath, line: UInt = #line) throws {
+        let inputEvent = try XCTUnwrap(
             CGEvent(
                 keyboardEventSource: CGEventSource(stateID: .hidSystemState),
                 virtualKey: CGKeyCode(keyCode),
                 keyDown: type.isKeyDown
             ).map(Unmanaged.passRetained)
         )
-        let events = process(event: fakeEvent.takeUnretainedValue(), type: type.eventType)
-        if let expected = expected {
-            if let mainEvent = events?.main?.takeUnretainedValue() {
-                XCTAssertEqual(mainEvent.getIntegerValueField(.keyboardEventKeycode), Int64(expected.keyCode), "keycode not equal", file: file, line: line)
-                XCTAssertEqual(mainEvent.type.humanReadable, expected.type.humanReadable, "event type not equal", file: file, line: line)
-            }
-            else {
-                XCTFail("Got nil, but expected \(expected)")
-            }
-        }
-        else {
-            XCTAssertNil(events)
+        let events = process(event: inputEvent.takeUnretainedValue(), type: type.eventType)
+        XCTAssertEqual(
+            events?.all.count ?? 0, expected.count,
+            "expected \(expected.count) event(s), but got \(String(describing: events?.all.count))",
+            file: file, line: line
+        )
+
+        for (testEventUnmanaged, controlEvent) in zip(events?.all ?? [], expected) {
+            let testEvent = testEventUnmanaged.takeRetainedValue()
+            XCTAssertEqual(testEvent.getIntegerValueField(.keyboardEventKeycode), Int64(controlEvent.keyCode), "keycode not equal", file: file, line: line)
+            XCTAssertEqual(testEvent.type.humanReadable, controlEvent.type.humanReadable, "event type not equal", file: file, line: line)
         }
     }
 }

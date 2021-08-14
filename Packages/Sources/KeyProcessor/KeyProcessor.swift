@@ -4,6 +4,10 @@ public struct Events {
     public let main: Unmanaged<CGEvent>?
     public let extras: [Unmanaged<CGEvent>]
 
+    var all: [Unmanaged<CGEvent>] {
+        ([main] + extras).compactMap { $0 }
+    }
+
     public init(_ main: Unmanaged<CGEvent>?) {
         self.init(main, extras: [])
     }
