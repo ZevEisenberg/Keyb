@@ -3,4 +3,4 @@
 
 #include "./BuildNumber.xcconfig"
 
-HALFKEYBOARD_VERSION_NUMBER = 1.1
+HALFKEYBOARD_VERSION_NUMBER = 1.2
