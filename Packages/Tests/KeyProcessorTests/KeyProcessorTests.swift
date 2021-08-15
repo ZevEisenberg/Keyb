@@ -30,6 +30,20 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
     }
 
+    func testSpaceWorksAfterCommandSpace() throws {
+        let sut = KeyProcessor()
+
+        // command-space shortcut
+        try sut.assert(keyCode: kVK_Command, type: .keyDown, expected: [(kVK_Command, .flagsChanged)])
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyDown), (kVK_Space, .keyUp)])
+        try sut.assert(keyCode: kVK_Command, type: .keyUp, expected: [(kVK_Command, .flagsChanged)])
+
+        // type a space
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyDown), (kVK_Space, .keyUp)])
+    }
+
 }
 
 private enum EventType {
