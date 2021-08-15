@@ -17,10 +17,9 @@ final class KeyProcessorTests: XCTestCase {
     }
 
     func testSpacebar() throws {
-        XCTExpectFailure("Spacebar is currently faking it by sending .keyDown when the user does a keyUp. Works because typing happens on key down, not key up, but it probably leaves the OS in a confused state because it thinks the spacebar is down. Will fix in a future change.")
         let sut = KeyProcessor()
         try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
-        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyDown), (kVK_Space, .keyUp)])
     }
 
     func testLeftFlippedKeyDown() throws {

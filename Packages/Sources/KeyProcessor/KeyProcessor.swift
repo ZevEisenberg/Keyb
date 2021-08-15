@@ -1,20 +1,27 @@
 import Carbon.HIToolbox
 
 public struct Events {
-    public let main: Unmanaged<CGEvent>?
-    public let extras: [Unmanaged<CGEvent>]
+    /// Events to post to the event tap before the main event.
+    public let preEvents: [Unmanaged<CGEvent>]
 
+    /// The main event to return from the event tap callback.
+    public let mainEvent: Unmanaged<CGEvent>?
+
+    /// All the events, in the order (`preEvents`, `mainEvent`)
     var all: [Unmanaged<CGEvent>] {
-        ([main] + extras).compactMap { $0 }
+        (preEvents + [mainEvent]).compactMap { $0 }
     }
 
     public init(_ main: Unmanaged<CGEvent>?) {
-        self.init(main, extras: [])
+        self.init(preEvents: [], mainEvent: main)
     }
 
-    public init(_ main: Unmanaged<CGEvent>? = nil, extras: [Unmanaged<CGEvent>] = []) {
-        self.main = main
-        self.extras = extras
+    public init(
+        preEvents: [Unmanaged<CGEvent>] = [],
+        mainEvent: Unmanaged<CGEvent>? = nil
+    ) {
+        self.preEvents = preEvents
+        self.mainEvent = mainEvent
     }
 }
 
@@ -25,16 +32,24 @@ public final class KeyProcessor {
     public init() {}
 
     public func process(event: CGEvent, type: CGEventType) -> Events? {
+        print(event)
+        let unmodifiedEvent = { () -> Events? in
+            let unmodified = Events(Unmanaged.passUnretained(event))
+            print("passing event unmodified: \(unmodified)")
+            return unmodified
+        }
         let typedKeyCode = Int(event.getIntegerValueField(.keyboardEventKeycode))
         switch typedKeyCode {
         case kVK_Space:
             // If it's the spacebar, handle logic around flipping the keyboard or just typing a regular space
             if type == .keyDown {
+                print("space down")
                 if isSpaceDown { return nil }
                 isSpaceDown = true
                 return nil
             }
             else if type == .keyUp {
+                print("space up")
                 isSpaceDown = false
                 if typedCharacterWhileSpaceWasDown {
                     typedCharacterWhileSpaceWasDown = false
@@ -42,14 +57,27 @@ public final class KeyProcessor {
                 }
                 else {
                     // simulate a key down so we type a space when space is released
-                    return CGEvent(
+                    if let spaceDown = CGEvent(
                         keyboardEventSource: CGEventSource(event: event),
                         virtualKey: CGKeyCode(kVK_Space),
                         keyDown: true
-                    ).map(Unmanaged.passRetained).map(Events.init) ?? Events(Unmanaged.passUnretained(event))
+                    ),
+                    let spaceUp = CGEvent(
+                        keyboardEventSource: CGEventSource(event: event),
+                        virtualKey: CGKeyCode(kVK_Space),
+                        keyDown: false
+                    ) {
+                        return Events(
+                            preEvents: [Unmanaged.passRetained(spaceDown)],
+                            mainEvent: Unmanaged.passRetained(spaceUp)
+                        )
+                    } else {
+                        // fallback: return original event
+                        return unmodifiedEvent()
+                    }
                 }
             }
-            return Events(Unmanaged.passUnretained(event))
+            return unmodifiedEvent()
         default:
             if isSpaceDown {
                 // Space is currently pressed, so flip the keyboard using the mapping table
@@ -57,7 +85,7 @@ public final class KeyProcessor {
 
                 // Get the flipped-layout character from the mapping table
                 guard let newKeyCode = mapping[typedKeyCode] else {
-                    return Events(Unmanaged.passUnretained(event))
+                    return unmodifiedEvent()
                 }
 
                 // Construct a new event, as though the user had typed the flipped key
@@ -67,11 +95,11 @@ public final class KeyProcessor {
                     keyDown: type == .keyDown
                 )
                 // fall back to original event if we failed to create a new one
-                return newEvent.map(Unmanaged.passRetained).map(Events.init) ?? Events(Unmanaged.passUnretained(event))
+                return newEvent.map(Unmanaged.passRetained).map(Events.init) ?? unmodifiedEvent()
             }
             else {
                 // Space isn't down, so pass through the original keypress without changing it
-                return Events(Unmanaged.passUnretained(event))
+                return unmodifiedEvent()
             }
         }
     }
