@@ -32,10 +32,8 @@ public final class KeyProcessor {
     public init() {}
 
     public func process(event: CGEvent, type: CGEventType) -> Events? {
-        print(event)
         let unmodifiedEvent = { () -> Events? in
             let unmodified = Events(Unmanaged.passUnretained(event))
-            print("passing event unmodified: \(unmodified)")
             return unmodified
         }
         let typedKeyCode = Int(event.getIntegerValueField(.keyboardEventKeycode))
@@ -43,13 +41,11 @@ public final class KeyProcessor {
         case kVK_Space:
             // If it's the spacebar, handle logic around flipping the keyboard or just typing a regular space
             if type == .keyDown {
-                print("space down")
                 if isSpaceDown { return nil }
                 isSpaceDown = true
                 return nil
             }
             else if type == .keyUp {
-                print("space up")
                 isSpaceDown = false
                 if typedCharacterWhileSpaceWasDown {
                     typedCharacterWhileSpaceWasDown = false
