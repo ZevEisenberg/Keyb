@@ -1,4 +1,5 @@
 import Carbon.HIToolbox
+import HumanReadable
 import XCTest
 @testable import KeyProcessor
 
@@ -85,34 +86,6 @@ private extension KeyProcessor {
             let testEvent = testEventUnmanaged.takeRetainedValue()
             XCTAssertEqual(testEvent.getIntegerValueField(.keyboardEventKeycode), Int64(controlEvent.keyCode), "keycode not equal", file: file, line: line)
             XCTAssertEqual(testEvent.type.humanReadable, controlEvent.type.humanReadable, "event type not equal", file: file, line: line)
-        }
-    }
-}
-
-extension CGEventType {
-    var humanReadable: String {
-        switch self {
-        case .null: return "null"
-        case .leftMouseDown: return "leftMouseDown"
-        case .leftMouseUp: return "leftMouseUp"
-        case .rightMouseDown: return "rightMouseDown"
-        case .rightMouseUp: return "rightMouseUp"
-        case .mouseMoved: return "mouseMoved"
-        case .leftMouseDragged: return "leftMouseDragged"
-        case .rightMouseDragged: return "rightMouseDragged"
-        case .keyDown: return "keyDown"
-        case .keyUp: return "keyUp"
-        case .flagsChanged: return "flagsChanged"
-        case .scrollWheel: return "scrollWheel"
-        case .tabletPointer: return "tabletPointer"
-        case .tabletProximity: return "tabletProximity"
-        case .otherMouseDown: return "otherMouseDown"
-        case .otherMouseUp: return "otherMouseUp"
-        case .otherMouseDragged: return "otherMouseDragged"
-        case .tapDisabledByTimeout: return "tapDisabledByTimeout"
-        case .tapDisabledByUserInput: return "tapDisabledByUserInput"
-        @unknown default:
-            return "unknown case \(self.rawValue)"
         }
     }
 }
