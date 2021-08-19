@@ -45,6 +45,19 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyDown), (kVK_Space, .keyUp)])
     }
 
+    func testTypingSpaceWhileLetterIsPressedDown() throws {
+        let sut = KeyProcessor()
+
+        // Sometimes, when typing fast, we type a space while the last letter is still held down.
+        // This should type the letter and the space, both on key-down.
+
+        try sut.assert(keyCode: kVK_ANSI_Comma, type: .keyDown, expected: [(kVK_ANSI_Comma, .keyDown)])
+        // If there is already a key down, go ahead and send a space because we aren't doing a chord
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [(kVK_Space, .keyDown)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
+        try sut.assert(keyCode: kVK_ANSI_Comma, type: .keyUp, expected: [(kVK_ANSI_Comma, .keyUp)])
+    }
+
 }
 
 private enum EventType {
