@@ -41,7 +41,6 @@ public final class KeyProcessor {
         case kVK_Space:
             // If it's the spacebar, handle logic around flipping the keyboard or just typing a regular space
             if type == .keyDown {
-                if isSpaceDown { return nil }
                 isSpaceDown = true
                 return nil
             }
