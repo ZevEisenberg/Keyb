@@ -51,10 +51,10 @@ final class KeyProcessorTests: XCTestCase {
         // Sometimes, when typing fast, we type a space while the last letter is still held down.
         // This should type the letter and the space, both on key-down.
 
-        try sut.assert(keyCode: kVK_ANSI_Comma, type: .keyDown, expected: [(kVK_ANSI_Comma, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_S, .keyDown)])
         try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [(kVK_Space, .keyDown)])
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
-        try sut.assert(keyCode: kVK_ANSI_Comma, type: .keyUp, expected: [(kVK_ANSI_Comma, .keyUp)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_S, .keyUp)])
     }
 
     func testTypingSpaceInterleavedWithLetter() throws {
@@ -63,9 +63,9 @@ final class KeyProcessorTests: XCTestCase {
         // Sometimes, when typing fast, we type a space while the last letter is still held down, and release them
         // in the same order. This should type the letter and the space, both on key-down.
 
-        try sut.assert(keyCode: kVK_ANSI_Comma, type: .keyDown, expected: [(kVK_ANSI_Comma, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_S, .keyDown)])
         try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [(kVK_Space, .keyDown)])
-        try sut.assert(keyCode: kVK_ANSI_Comma, type: .keyUp, expected: [(kVK_ANSI_Comma, .keyUp)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_S, .keyUp)])
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
     }
 
