@@ -28,6 +28,7 @@ public struct Events {
 public final class KeyProcessor {
     private var isSpaceDown = false
     private var typedCharacterWhileSpaceWasDown = false
+    private var nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown: Set<Int> = []
 
     public init() {}
 
@@ -42,13 +43,22 @@ public final class KeyProcessor {
             // If it's the spacebar, handle logic around flipping the keyboard or just typing a regular space
             if type == .keyDown {
                 isSpaceDown = true
-                return nil
+                if nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown.isEmpty {
+                    return nil
+                }
+                else {
+                    return unmodifiedEvent()
+                }
             }
             else if type == .keyUp {
                 isSpaceDown = false
                 if typedCharacterWhileSpaceWasDown {
                     typedCharacterWhileSpaceWasDown = false
                     return nil
+                }
+                else if !nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown.isEmpty {
+                    nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown = []
+                    return unmodifiedEvent()
                 }
                 else {
                     // simulate a key down so we type a space when space is released
@@ -74,7 +84,15 @@ public final class KeyProcessor {
             }
             return unmodifiedEvent()
         default:
-            if isSpaceDown {
+            defer {
+                if event.type == .keyDown, !isSpaceDown {
+                    nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown.insert(typedKeyCode)
+                }
+            }
+
+            let noOtherKeysCurrentlyPressed = nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown.isEmpty
+            let otherKeysCurrentlyPressed = !noOtherKeysCurrentlyPressed
+            if isSpaceDown && !otherKeysCurrentlyPressed {
                 // Space is currently pressed, so flip the keyboard using the mapping table
                 typedCharacterWhileSpaceWasDown = true
 
