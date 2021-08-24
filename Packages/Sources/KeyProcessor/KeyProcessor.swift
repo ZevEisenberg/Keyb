@@ -28,7 +28,7 @@ public struct Events {
 public final class KeyProcessor {
     private var isSpaceDown = false
     private var typedCharacterWhileSpaceWasDown = false
-    private var nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown: Set<Int> = []
+    private var nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown: Set<Int> = []
 
     public init() {}
 
@@ -43,7 +43,7 @@ public final class KeyProcessor {
             // If it's the spacebar, handle logic around flipping the keyboard or just typing a regular space
             if type == .keyDown {
                 isSpaceDown = true
-                if nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown.isEmpty {
+                if nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.isEmpty {
                     return nil
                 }
                 else {
@@ -56,8 +56,8 @@ public final class KeyProcessor {
                     typedCharacterWhileSpaceWasDown = false
                     return nil
                 }
-                else if !nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown.isEmpty {
-                    nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown = []
+                else if !nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.isEmpty {
+                    nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown = []
                     return unmodifiedEvent()
                 }
                 else {
@@ -86,11 +86,11 @@ public final class KeyProcessor {
         default:
             defer {
                 if event.type == .keyDown, !isSpaceDown {
-                    nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown.insert(typedKeyCode)
+                    nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.insert(typedKeyCode)
                 }
             }
 
-            let noOtherKeysCurrentlyPressed = nonFlippedNonSpaceKeysThatWerePressedBeforeOrDuringCurrentSpaceDown.isEmpty
+            let noOtherKeysCurrentlyPressed = nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.isEmpty
             let otherKeysCurrentlyPressed = !noOtherKeysCurrentlyPressed
             if isSpaceDown && !otherKeysCurrentlyPressed {
                 // Space is currently pressed, so flip the keyboard using the mapping table
