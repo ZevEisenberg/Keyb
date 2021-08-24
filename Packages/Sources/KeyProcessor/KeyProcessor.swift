@@ -90,6 +90,10 @@ public final class KeyProcessor {
                 }
             }
 
+            if event.type == .keyUp, !isSpaceDown {
+                nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.remove(typedKeyCode)
+            }
+
             let noOtherKeysCurrentlyPressed = nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.isEmpty
             let otherKeysCurrentlyPressed = !noOtherKeysCurrentlyPressed
             if isSpaceDown && !otherKeysCurrentlyPressed {

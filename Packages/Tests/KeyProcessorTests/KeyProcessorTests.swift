@@ -69,6 +69,20 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
     }
 
+    func testRegularKeyThenFlippedKeyTwice() throws {
+        let sut = KeyProcessor()
+
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_S, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_S, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_L, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_L, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_L, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_L, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
+    }
 }
 
 private enum EventType {
