@@ -45,6 +45,68 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyDown), (kVK_Space, .keyUp)])
     }
 
+    func testTypingSpaceWhileLetterIsPressedDown() throws {
+        let sut = KeyProcessor()
+
+        // Sometimes, when typing fast, we type a space while the last letter is still held down.
+        // This should type the letter and the space, both on key-down.
+
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_S, .keyDown)])
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [(kVK_Space, .keyDown)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_S, .keyUp)])
+    }
+
+    func testTypingSpaceInterleavedWithLetter() throws {
+        let sut = KeyProcessor()
+
+        // Sometimes, when typing fast, we type a space while the last letter is still held down, and release them
+        // in the same order. This should type the letter and the space, both on key-down.
+
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_S, .keyDown)])
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [(kVK_Space, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_S, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
+    }
+
+    func testRegularKeyThenFlippedKeyTwice() throws {
+        let sut = KeyProcessor()
+
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_S, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_S, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_L, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_L, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_L, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_L, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
+    }
+
+    func testDelete() throws {
+        let sut = KeyProcessor()
+
+        // Type an S
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_S, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_S, .keyUp)])
+
+        // Type Delete using Space-Tab
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_Tab, type: .keyDown, expected: [(kVK_Delete, .keyDown)])
+        try sut.assert(keyCode: kVK_Tab, type: .keyUp, expected: [(kVK_Delete, .keyUp)])
+
+        // Type a flipped character
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_L, .keyDown)])
+        try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_L, .keyUp)])
+        try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
+
+        // Type Delete using Space-Tab
+        try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
+        try sut.assert(keyCode: kVK_Tab, type: .keyDown, expected: [(kVK_Delete, .keyDown)])
+        try sut.assert(keyCode: kVK_Tab, type: .keyUp, expected: [(kVK_Delete, .keyUp)])
+    }
 }
 
 private enum EventType {

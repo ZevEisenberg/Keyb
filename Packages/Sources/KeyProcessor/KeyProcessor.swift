@@ -28,6 +28,7 @@ public struct Events {
 public final class KeyProcessor {
     private var isSpaceDown = false
     private var typedCharacterWhileSpaceWasDown = false
+    private var nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown: Set<Int> = []
 
     public init() {}
 
@@ -41,15 +42,23 @@ public final class KeyProcessor {
         case kVK_Space:
             // If it's the spacebar, handle logic around flipping the keyboard or just typing a regular space
             if type == .keyDown {
-                if isSpaceDown { return nil }
                 isSpaceDown = true
-                return nil
+                if nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.isEmpty {
+                    return nil
+                }
+                else {
+                    return unmodifiedEvent()
+                }
             }
             else if type == .keyUp {
                 isSpaceDown = false
                 if typedCharacterWhileSpaceWasDown {
                     typedCharacterWhileSpaceWasDown = false
                     return nil
+                }
+                else if !nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.isEmpty {
+                    nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown = []
+                    return unmodifiedEvent()
                 }
                 else {
                     // simulate a key down so we type a space when space is released
@@ -75,7 +84,19 @@ public final class KeyProcessor {
             }
             return unmodifiedEvent()
         default:
-            if isSpaceDown {
+            defer {
+                if event.type == .keyDown, !isSpaceDown {
+                    nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.insert(typedKeyCode)
+                }
+            }
+
+            if event.type == .keyUp, !isSpaceDown {
+                nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.remove(typedKeyCode)
+            }
+
+            let noOtherKeysCurrentlyPressed = nonFlippedNonSpaceKeysPressedBeforeOrDuringCurrentSpaceDown.isEmpty
+            let otherKeysCurrentlyPressed = !noOtherKeysCurrentlyPressed
+            if isSpaceDown && !otherKeysCurrentlyPressed {
                 // Space is currently pressed, so flip the keyboard using the mapping table
                 typedCharacterWhileSpaceWasDown = true
 
