@@ -144,7 +144,7 @@
                                         <rect key="frame" x="-2" y="0.0" width="435" height="64"/>
                                         <textFieldCell key="cell" alignment="left" id="F47-eC-U1J">
                                             <font key="font" metaFont="system"/>
-                                            <string key="title">When this box is checked, holding the space bar will flip the keyboard horizontally. This allows you to type with one hand: every time you would use the other hand, just hold the spacebar and use the equivalent finger.</string>
+                                            <string key="title">When this box is checked, holding the space bar will flip the keyboard horizontally. This allows you to type with one hand. Every time you would use the other hand, instead hold the spacebar and use the equivalent finger.</string>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
