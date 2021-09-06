@@ -6,20 +6,47 @@ import PackageDescription
 let package = Package(
     name: "Packages",
     platforms: [
-        .macOS(.v10_13),
+        .macOS(.v11),
     ],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
+        .library(
+            name: "UserInterface",
+            targets: ["UserInterface"]
+        ),
         .library(
             name: "KeyProcessor",
             targets: ["KeyProcessor"]),
         .library(
+            name: "AccessibilityClient",
+            targets: ["AccessibilityClient"]),
+        .library(
+            name: "AccessibilityClientLive",
+            targets: ["AccessibilityClientLive"]),
+        .library(
+            name: "EventHandler",
+            targets: ["EventHandler"]),
+        .library(
+            name: "EventHandlerClient",
+            targets: ["EventHandlerClient"]),
+        .library(
+            name: "EventHandlerClientLive",
+            targets: ["EventHandlerClientLive"]),
+        .library(
             name: "HumanReadable",
             targets: ["HumanReadable"])
     ],
+    dependencies: [
+        .package(name: "swift-composable-architecture", url: "https://github.com/pointfreeco/swift-composable-architecture", .upToNextMajor(from: "0.25.0")),
+    ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        .target(
+            name: "UserInterface",
+            dependencies: [
+                "AccessibilityClient",
+                "EventHandlerClient",
+                "KeyProcessor",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+            ]),
         .target(
             name: "KeyProcessor",
             dependencies: ["HumanReadable"]),
@@ -29,6 +56,37 @@ let package = Package(
                 "HumanReadable",
                 "KeyProcessor",
             ]),
+        .target(
+            name: "EventHandler",
+            dependencies: [
+                "HumanReadable",
+                "KeyProcessor",
+            ]
+        ),
+        .target(
+            name: "EventHandlerClient",
+            dependencies: [
+            ]
+        ),
+        .target(
+            name: "EventHandlerClientLive",
+            dependencies: [
+                "EventHandler",
+                "EventHandlerClient",
+            ]
+        ),
+        .target(
+            name: "AccessibilityClient",
+            dependencies: [
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+            ]
+        ),
+        .target(
+            name: "AccessibilityClientLive",
+            dependencies: [
+                "AccessibilityClient",
+            ]
+        ),
         .target(
             name: "HumanReadable")
     ]

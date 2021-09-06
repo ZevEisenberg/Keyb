@@ -5,28 +5,33 @@ import HumanReadable
 import KeyProcessor
 import os.log
 
+public extension Result where Success == Void {
+    static func success() -> Self {
+        .success(())
+    }
+}
+
 private let keypressLog = OSLog(subsystem: "events", category: "keypresses")
 
-final class EventHandler {
+public final class EventHandler {
 
     // Public Properties
 
-    static let shared = EventHandler()
+    private(set) public var isEnabled = false
 
     // Private Properties
 
-    private var isRunning = false
     private var eventTap: CFMachPort?
     private let keyProcessor = KeyProcessor()
 
     // Lifecycle
 
-    private init() {
+    public init() {}
 
-    }
-
-    func start() -> Bool {
-        guard !isRunning else { return true }
+    /// Attempt to start the event handler
+    /// - Returns: `true` if successfully started. Otherwise, `false`, probably due to a permissions error.
+    public func start() -> Bool {
+        guard !isEnabled else { return true }
 
         // Intercept keyDown, keyUp, and flagsChanged events
         let mask: CGEventMask = 1 << CGEventType.keyDown.rawValue | 1 << CGEventType.keyUp.rawValue | 1 << CGEventType.flagsChanged.rawValue
@@ -67,7 +72,6 @@ final class EventHandler {
         )
 
         guard let eventTap = eventTap else {
-            print("Permission issue")
             return false
         }
 
@@ -75,16 +79,16 @@ final class EventHandler {
         let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
-        isRunning = true
+        isEnabled = true
         return true
     }
 
-    func stop() {
-        guard eventTap != nil, isRunning else { return }
+    public func stop() {
+        guard eventTap != nil, isEnabled else { return }
         // TODO: do this in Obj-C to catch thrown errors
         CFMachPortInvalidate(eventTap);
         eventTap = nil
-        isRunning = false
+        isEnabled = false
     }
 
 }
