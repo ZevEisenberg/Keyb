@@ -26,5 +26,13 @@ It would be great to add a real UI and tutorial. But even better, it would be gr
 
 (If you decide to do this, you might want to check with [Matias](https://matias.ca/halfkeyboard/) to see if they have any annoying patents or copyrights. The [original patent](https://patents.google.com/patent/EP0489792B1) appears to have expired in 2010, but I am not a lawyer.)
 
+## Development
+
+If you need to reset accessibility permissions, you can do so with:
+
+```sh
+tccutil reset Accessibility com.zeveisenberg.HalfKeyboard
+```
+
 ## Credits
 Icon uses assets created by Herbert Spencer from the Noun Project.
