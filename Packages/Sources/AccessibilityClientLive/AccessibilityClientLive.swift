@@ -7,11 +7,13 @@ public extension AccessibilityClient {
         .init(
             isCurrentlyTrusted: {
                 let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
-                return AXIsProcessTrustedWithOptions([promptFlag: false] as CFDictionary)
+                let result = AXIsProcessTrustedWithOptions([promptFlag: false] as CFDictionary)
+                return result
             },
             promptForTrust: {
                 let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
-                return AXIsProcessTrustedWithOptions([promptFlag: true] as CFDictionary)
+                let result = AXIsProcessTrustedWithOptions([promptFlag: true] as CFDictionary)
+                return result
             }
         )
     }
