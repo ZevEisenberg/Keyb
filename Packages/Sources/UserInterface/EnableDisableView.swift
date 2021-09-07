@@ -13,13 +13,7 @@ struct EnableDisableView: View {
                         get: { userInterfaceState in
                             userInterfaceState.mode == .hasAccessibilityPermission(isRunning: true)
                         },
-                        send: { newValue in
-                            if newValue {
-                                return UserInterfaceAction.promptForPermission
-                            } else {
-                                return .stopObservingEvents
-                            }
-                        })
+                        send: { $0 ? .startObservingEvents : .stopObservingEvents })
                 ) {
                     Text("Enable half keyboard")
                 }
@@ -40,8 +34,9 @@ struct EnableDisableView_Previews: PreviewProvider {
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
                 reducer: userInterfaceReducer,
                 environment: .init(
-                    accessibilityClient: .grantsWhenPrompted,
-                    eventHandlerClient: .noop(enabled: false)
+                    accessibilityClient: .accessibilityIsNotGranted,
+                    eventHandlerClient: .noop(enabled: false),
+                    mainQueue: .immediate
                 )
             )
         )

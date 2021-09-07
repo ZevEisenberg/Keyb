@@ -35,39 +35,69 @@ public enum UserInterfaceAction: Equatable {
     case startObservingEvents
     case stopObservingEvents
     case permissionsError
+    case checkForPermissions
 }
 
 public struct UserInterfaceEnvironment {
     public var accessibilityClient: AccessibilityClient
     public var eventHandlerClient: EventHandlerClient
+    public var mainQueue: AnySchedulerOf<DispatchQueue>
 
     public init(
         accessibilityClient: AccessibilityClient,
-        eventHandlerClient: EventHandlerClient
+        eventHandlerClient: EventHandlerClient,
+        mainQueue: AnySchedulerOf<DispatchQueue>
     ) {
         self.accessibilityClient = accessibilityClient
         self.eventHandlerClient = eventHandlerClient
+        self.mainQueue = mainQueue
     }
 }
 
 public let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceAction, UserInterfaceEnvironment> { state, action, environment in
+    struct TimerID: Hashable {}
+
     switch action {
+    case .checkForPermissions:
+        let isCurrentlyTrusted = environment.accessibilityClient.isCurrentlyTrusted()
+        return .init(value: .permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
+
     case .promptForPermission:
-        let newValue = environment.accessibilityClient.promptForTrust()
-        return .init(value: .permissionChanged(hasAccessibilityPermission: newValue))
+        let isCurrentlyTrusted = environment.accessibilityClient.isCurrentlyTrusted()
+        guard !isCurrentlyTrusted else {
+            state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
+            return .none
+        }
+
+        let provisionalStartResult = environment.eventHandlerClient.startProvisional()
+        return .concatenate(
+            .init(value: .permissionChanged(hasAccessibilityPermission: provisionalStartResult)),
+            Effect.timer(id: TimerID(), every: 0.5, on: environment.mainQueue)
+                .map { _ in .checkForPermissions }
+        )
 
     case .permissionChanged(let hasAccessibilityPermission):
+        var effects: [Effect<UserInterfaceAction, Never>] = [.none]
         if hasAccessibilityPermission {
+            // cancel if permissions changed
+            if case .noAccessibilityPermission = state.mode {
+                effects.append(.cancel(id: TimerID()))
+            }
             state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
         }
         else {
+            // cancel if permissions changed
+            if case .hasAccessibilityPermission = state.mode {
+                effects.append(.cancel(id: TimerID()))
+            }
             // TODO: can we learn more here?
             state.mode = .noAccessibilityPermission(.hasNotPromptedYet)
         }
-        return .none
+        return .concatenate(effects)
 
     case .startObservingEvents:
-        let startSuccess = environment.eventHandlerClient.start()
+        let startSuccess = environment.eventHandlerClient.startActive()
+        state.mode = .hasAccessibilityPermission(isRunning: startSuccess)
         if startSuccess {
             return .none
         } else {
@@ -94,16 +124,21 @@ public struct UserInterfaceView: View {
 
     public var body: some View {
         WithViewStore(store) { viewStore in
-            switch viewStore.mode {
-            case .hasAccessibilityPermission:
-                EnableDisableView(store: store)
-            case .noAccessibilityPermission(let reason):
-                switch reason {
-                case .hasNotPromptedYet:
-                    OnboardingView(store: store)
-                case .permissionError:
-                    PermissionErrorView()
+            Group {
+                switch viewStore.mode {
+                case .hasAccessibilityPermission:
+                    EnableDisableView(store: store)
+                case .noAccessibilityPermission(let reason):
+                    switch reason {
+                    case .hasNotPromptedYet:
+                        OnboardingView(store: store)
+                    case .permissionError:
+                        PermissionErrorView()
+                    }
                 }
+            }
+            .onAppear {
+                viewStore.send(.checkForPermissions)
             }
         }
     }
@@ -117,7 +152,8 @@ struct UserInterfaceView_Previews: PreviewProvider {
                 reducer: userInterfaceReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsEnabled,
-                    eventHandlerClient: .noop(enabled: false)
+                    eventHandlerClient: .noop(enabled: false),
+                    mainQueue: .immediate
                 )
             )
         )
@@ -128,7 +164,8 @@ struct UserInterfaceView_Previews: PreviewProvider {
                 reducer: userInterfaceReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsEnabled,
-                    eventHandlerClient: .noop(enabled: true)
+                    eventHandlerClient: .noop(enabled: true),
+                    mainQueue: .immediate
                 )
             )
         )
@@ -138,8 +175,9 @@ struct UserInterfaceView_Previews: PreviewProvider {
                 initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
                 reducer: userInterfaceReducer,
                 environment: .init(
-                    accessibilityClient: .noop,
-                    eventHandlerClient: .noop(enabled: true)
+                    accessibilityClient: .accessibilityIsNotGranted,
+                    eventHandlerClient: .noop(enabled: true),
+                    mainQueue: .immediate
                 )
             )
         )
@@ -149,8 +187,9 @@ struct UserInterfaceView_Previews: PreviewProvider {
                 initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
                 reducer: userInterfaceReducer,
                 environment: .init(
-                    accessibilityClient: .noop,
-                    eventHandlerClient: .noop(enabled: true)
+                    accessibilityClient: .accessibilityIsNotGranted,
+                    eventHandlerClient: .noop(enabled: true),
+                    mainQueue: .immediate
                 )
             )
         )

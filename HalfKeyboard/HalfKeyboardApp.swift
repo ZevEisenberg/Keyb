@@ -17,7 +17,8 @@ struct HalfKeyboardApp: App {
                 reducer: userInterfaceReducer,
                 environment: .init(
                     accessibilityClient: .live,
-                    eventHandlerClient: .live(with: eventHandler)
+                    eventHandlerClient: .live(with: eventHandler),
+                    mainQueue: .main
                 )
             ))
         }

@@ -30,8 +30,9 @@ struct OnboardingView_Previews: PreviewProvider {
                 initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
                 reducer: userInterfaceReducer,
                 environment: .init(
-                    accessibilityClient: .noop,
-                    eventHandlerClient: .noop(enabled: false)
+                    accessibilityClient: .accessibilityIsNotGranted,
+                    eventHandlerClient: .noop(enabled: false),
+                    mainQueue: .immediate
                 )
             )
         )

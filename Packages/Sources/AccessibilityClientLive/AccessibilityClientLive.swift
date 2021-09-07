@@ -9,11 +9,6 @@ public extension AccessibilityClient {
                 let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
                 let result = AXIsProcessTrustedWithOptions([promptFlag: false] as CFDictionary)
                 return result
-            },
-            promptForTrust: {
-                let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
-                let result = AXIsProcessTrustedWithOptions([promptFlag: true] as CFDictionary)
-                return result
             }
         )
     }

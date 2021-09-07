@@ -15,6 +15,15 @@ private let keypressLog = OSLog(subsystem: "events", category: "keypresses")
 
 public final class EventHandler {
 
+    public enum Mode {
+
+        /// Start a tap in order to prompt for accessibility permissions, and then shut off again
+        case provisional
+
+        /// Intercept keystrokes to enable one-handed typing
+        case active
+    }
+
     // Public Properties
 
     private(set) public var isEnabled = false
@@ -30,7 +39,7 @@ public final class EventHandler {
 
     /// Attempt to start the event handler
     /// - Returns: `true` if successfully started. Otherwise, `false`, probably due to a permissions error.
-    public func start() -> Bool {
+    public func start(mode: Mode) -> Bool {
         guard !isEnabled else { return true }
 
         // Intercept keyDown, keyUp, and flagsChanged events
@@ -80,6 +89,10 @@ public final class EventHandler {
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
         isEnabled = true
+
+        if mode == .provisional {
+            stop()
+        }
         return true
     }
 

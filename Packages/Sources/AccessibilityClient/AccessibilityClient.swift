@@ -1,11 +1,9 @@
 public struct AccessibilityClient {
 
     public var isCurrentlyTrusted: () -> Bool
-    public var promptForTrust: () -> Bool
 
-    public init(isCurrentlyTrusted: @escaping () -> Bool, promptForTrust: @escaping () -> Bool) {
+    public init(isCurrentlyTrusted: @escaping () -> Bool) {
         self.isCurrentlyTrusted = isCurrentlyTrusted
-        self.promptForTrust = promptForTrust
     }
 
 }
@@ -16,32 +14,14 @@ public extension AccessibilityClient {
         .init(
             isCurrentlyTrusted: {
                 true
-            },
-            promptForTrust: {
-                fatalError("Should never need to prompt if accessibility is already granted")
-            })
-    }
-
-    static var noop: Self {
-        .init(
-            isCurrentlyTrusted: {
-                false
-            },
-            promptForTrust: {
-                false
             }
         )
     }
 
-    static var grantsWhenPrompted: Self {
-        var isCurrentlyAllowed = false
-        return .init(
+    static var accessibilityIsNotGranted: Self {
+        .init(
             isCurrentlyTrusted: {
-                isCurrentlyAllowed
-            },
-            promptForTrust: {
-                isCurrentlyAllowed = true
-                return true
+                false
             }
         )
     }
