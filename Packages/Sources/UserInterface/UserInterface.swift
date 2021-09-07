@@ -105,9 +105,10 @@ public let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceActio
         }
 
     case .stopObservingEvents:
-        return .fireAndForget {
-            environment.eventHandlerClient.stop()
-        }
+        state.mode = .hasAccessibilityPermission(isRunning: false)
+        environment.eventHandlerClient.stop()
+        return .none
+
     case .permissionsError:
         state.mode = .noAccessibilityPermission(.permissionError)
         return .none

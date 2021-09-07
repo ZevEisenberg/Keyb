@@ -47,6 +47,11 @@ let package = Package(
                 "KeyProcessor",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]),
+        .testTarget(
+            name: "UserInterfaceTests",
+            dependencies: [
+                "UserInterface",
+            ]),
         .target(
             name: "KeyProcessor",
             dependencies: ["HumanReadable"]),
