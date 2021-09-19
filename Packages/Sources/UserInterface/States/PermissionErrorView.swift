@@ -31,6 +31,7 @@ struct PermissionErrorView: View {
             Text("3. Click the 🔒 at the bottom to unlock it.")
             Text("4. Check the box next to HalfKeyboard.")
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
 }
