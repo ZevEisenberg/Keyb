@@ -20,6 +20,7 @@ public final class EventHandler {
 
     // Public Properties
 
+    /// Whether we are currently intercepting and modifying keystrokes.
     private(set) public var isEnabled = false
 
     // Private Properties
