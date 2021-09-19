@@ -21,7 +21,7 @@ struct PermissionErrorView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(mode.title)
-                .font(.largeTitle)
+                .font(.headline)
             Text("HalfKeyboard needs your permission to watch your keystrokes in order to work.")
             Spacer()
                 .frame(height: 10)
