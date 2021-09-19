@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// A button that opens Security & Privacy preferences when activated.
 struct OpenPreferencesButton: View {
 
     @Environment(\.openURL) var openURL
