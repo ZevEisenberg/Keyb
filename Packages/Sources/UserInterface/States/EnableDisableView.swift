@@ -7,7 +7,7 @@ struct EnableDisableView: View {
 
     var body: some View {
         WithViewStore(store) { viewStore in
-            Form {
+            VStack(alignment: .leading) {
                 Toggle(
                     isOn: viewStore.binding(
                         get: { userInterfaceState in
@@ -18,10 +18,8 @@ struct EnableDisableView: View {
                     Text("Enable half keyboard")
                 }
                 Text("When this box is checked, holding the space bar will flip the keyboard horizontally. This allows you to type with one hand. Every time you would use the other hand, instead hold the spacebar and use the equivalent finger.")
-                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding()
-            .frame(width: 400)
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
@@ -40,6 +38,6 @@ struct EnableDisableView_Previews: PreviewProvider {
                 )
             )
         )
-        .previewLayout(.sizeThatFits)
+            .frame(width: 600)
     }
 }

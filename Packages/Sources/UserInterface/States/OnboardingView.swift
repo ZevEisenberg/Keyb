@@ -16,9 +16,7 @@ struct OnboardingView: View {
                 Button(action: { viewStore.send(.promptForPermission) }) {
                     Text("Grant Accessibility Permissions")
                 }
-                Spacer()
             }
-            .padding()
         }
     }
 }
@@ -36,6 +34,5 @@ struct OnboardingView_Previews: PreviewProvider {
                 )
             )
         )
-        .previewLayout(.sizeThatFits)
     }
 }

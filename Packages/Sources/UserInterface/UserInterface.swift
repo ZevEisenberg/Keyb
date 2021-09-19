@@ -8,6 +8,7 @@ public struct UserInterfaceState: Equatable {
         public enum NoAccessibilityPermissionReason: Equatable {
             case hasNotPromptedYet
             case permissionError
+            case awaitingUser
         }
 
         case hasAccessibilityPermission(isRunning: Bool)
@@ -69,6 +70,7 @@ public let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceActio
             return .none
         }
 
+        state.mode = .noAccessibilityPermission(.awaitingUser)
         let provisionalStartResult = environment.eventHandlerClient.startProvisional()
         return .concatenate(
             .init(value: .permissionChanged(hasAccessibilityPermission: provisionalStartResult)),
@@ -90,8 +92,8 @@ public let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceActio
             if case .hasAccessibilityPermission = state.mode {
                 effects.append(.cancel(id: TimerID()))
             }
-            // TODO: can we learn more here?
-            state.mode = .noAccessibilityPermission(.hasNotPromptedYet)
+//            // TODO: can we learn more here?
+//            state.mode = .noAccessibilityPermission(.hasNotPromptedYet)
         }
         return .concatenate(effects)
 
@@ -134,10 +136,14 @@ public struct UserInterfaceView: View {
                     case .hasNotPromptedYet:
                         OnboardingView(store: store)
                     case .permissionError:
-                        PermissionErrorView()
+                        PermissionErrorView(mode: .problem)
+                    case .awaitingUser:
+                        PermissionErrorView(mode: .awaiting)
                     }
                 }
             }
+            .frame(maxHeight: 1000)
+            .padding()
             .onAppear {
                 viewStore.send(.checkForPermissions)
             }
