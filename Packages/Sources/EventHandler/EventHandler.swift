@@ -5,12 +5,6 @@ import HumanReadable
 import KeyProcessor
 import os.log
 
-public extension Result where Success == Void {
-    static func success() -> Self {
-        .success(())
-    }
-}
-
 private let keypressLog = OSLog(subsystem: "events", category: "keypresses")
 
 public final class EventHandler {
