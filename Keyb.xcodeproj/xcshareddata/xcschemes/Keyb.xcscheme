@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CD3978AD24AD1FE100BFCB0D"
-               BuildableName = "HalfKeyboard.app"
-               BlueprintName = "HalfKeyboard"
-               ReferencedContainer = "container:HalfKeyboard.xcodeproj">
+               BuildableName = "Keyb.app"
+               BlueprintName = "Keyb"
+               ReferencedContainer = "container:Keyb.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -93,9 +93,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CD3978AD24AD1FE100BFCB0D"
-            BuildableName = "HalfKeyboard.app"
-            BlueprintName = "HalfKeyboard"
-            ReferencedContainer = "container:HalfKeyboard.xcodeproj">
+            BuildableName = "Keyb.app"
+            BlueprintName = "Keyb"
+            ReferencedContainer = "container:Keyb.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -110,9 +110,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CD3978AD24AD1FE100BFCB0D"
-            BuildableName = "HalfKeyboard.app"
-            BlueprintName = "HalfKeyboard"
-            ReferencedContainer = "container:HalfKeyboard.xcodeproj">
+            BuildableName = "Keyb.app"
+            BlueprintName = "Keyb"
+            ReferencedContainer = "container:Keyb.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

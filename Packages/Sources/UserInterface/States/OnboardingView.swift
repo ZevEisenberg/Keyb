@@ -8,13 +8,13 @@ struct OnboardingView: View {
     var body: some View {
         WithViewStore(store) { viewStore in
             VStack(alignment: .leading) {
-                Text("Welcome to HalfKeyboard")
+                Text("Welcome to Keyb")
                     .font(.headline)
                 Text("Touch-type with one hand.")
                     .font(.subheadline)
                 Spacer()
                     .frame(height: 10)
-                Text("HalfKeyboard needs your permission to watch your keystrokes:")
+                Text("Keyb needs your permission to watch your keystrokes:")
                 Button(action: { viewStore.send(.promptForPermission) }) {
                     Text("Grant Accessibility Access")
                 }

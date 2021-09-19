@@ -20,7 +20,7 @@ platform :mac do
   lane :release do |options|
     the_tag = options[:tag] || UI.user_error!("No tag provided. Pass a tag like tag:1.2.3")
     build_mac_app(
-      scheme: "HalfKeyboard",
+      scheme: "Keyb",
       clean: true,
       output_directory: "build",
       skip_package_pkg: true, # https://github.com/fastlane/fastlane/issues/15963
@@ -30,16 +30,16 @@ platform :mac do
       }
     )
     zip(
-      path: "build/HalfKeyboard.app",
-      output_path: "build/HalfKeyboard.app.zip"
+      path: "build/Keyb.app",
+      output_path: "build/Keyb.app.zip"
     )
     github_release = set_github_release(
-      repository_name: "ZevEisenberg/HalfKeyboard",
+      repository_name: "ZevEisenberg/Keyb",
       api_token: ENV["GITHUB_TOKEN"],
       tag_name: the_tag,
       name: the_tag,
       description: "", # easier to enter release notes on GitHub
-      upload_assets: ["build/HalfKeyboard.app.zip", "build/HalfKeyboard.app.dSYM.zip"]
+      upload_assets: ["build/Keyb.app.zip", "build/Keyb.app.dSYM.zip"]
     )
   end
 end
