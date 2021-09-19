@@ -36,7 +36,7 @@ let package = Package(
             targets: ["HumanReadable"])
     ],
     dependencies: [
-        .package(name: "swift-composable-architecture", url: "https://github.com/pointfreeco/swift-composable-architecture", .upToNextMinor(from: "0.26.0")),
+        .package(name: "swift-composable-architecture", url: "https://github.com/pointfreeco/swift-composable-architecture", .upToNextMinor(from: "0.27.0")),
     ],
     targets: [
         .target(
