@@ -22,7 +22,6 @@ struct OnboardingView: View {
                     .font(.subheadline)
             }
             .fixedSize(horizontal: false, vertical: true)
-
         }
     }
 }
