@@ -19,7 +19,6 @@ struct EnableDisableView: View {
                 }
                 Text("When this box is checked, holding the space bar will flip the keyboard horizontally. This allows you to type with one hand. Every time you would use the other hand, instead hold the spacebar and use the equivalent finger.")
             }
-            .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
@@ -38,6 +37,6 @@ struct EnableDisableView_Previews: PreviewProvider {
                 )
             )
         )
-            .frame(width: 600)
+        .frame(width: 400)
     }
 }

@@ -142,7 +142,6 @@ public struct UserInterfaceView: View {
                     }
                 }
             }
-            .frame(maxHeight: 1000)
             .padding()
             .onAppear {
                 viewStore.send(.checkForPermissions)
@@ -153,53 +152,56 @@ public struct UserInterfaceView: View {
 
 struct UserInterfaceView_Previews: PreviewProvider {
     static var previews: some View {
-        UserInterfaceView(
-            store: .init(
-                initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: userInterfaceReducer,
-                environment: .init(
-                    accessibilityClient: .accessibilityIsEnabled,
-                    eventHandlerClient: .noop(enabled: false),
-                    mainQueue: .immediate
+        Group {
+            UserInterfaceView(
+                store: .init(
+                    initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
+                    reducer: userInterfaceReducer,
+                    environment: .init(
+                        accessibilityClient: .accessibilityIsEnabled,
+                        eventHandlerClient: .noop(enabled: false),
+                        mainQueue: .immediate
+                    )
                 )
             )
-        )
 
-        UserInterfaceView(
-            store: .init(
-                initialState: .init(mode: .hasAccessibilityPermission(isRunning: true)),
-                reducer: userInterfaceReducer,
-                environment: .init(
-                    accessibilityClient: .accessibilityIsEnabled,
-                    eventHandlerClient: .noop(enabled: true),
-                    mainQueue: .immediate
+            UserInterfaceView(
+                store: .init(
+                    initialState: .init(mode: .hasAccessibilityPermission(isRunning: true)),
+                    reducer: userInterfaceReducer,
+                    environment: .init(
+                        accessibilityClient: .accessibilityIsEnabled,
+                        eventHandlerClient: .noop(enabled: true),
+                        mainQueue: .immediate
+                    )
                 )
             )
-        )
 
-        UserInterfaceView(
-            store: .init(
-                initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-                reducer: userInterfaceReducer,
-                environment: .init(
-                    accessibilityClient: .accessibilityIsNotGranted,
-                    eventHandlerClient: .noop(enabled: true),
-                    mainQueue: .immediate
+            UserInterfaceView(
+                store: .init(
+                    initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
+                    reducer: userInterfaceReducer,
+                    environment: .init(
+                        accessibilityClient: .accessibilityIsNotGranted,
+                        eventHandlerClient: .noop(enabled: true),
+                        mainQueue: .immediate
+                    )
                 )
             )
-        )
 
-        UserInterfaceView(
-            store: .init(
-                initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
-                reducer: userInterfaceReducer,
-                environment: .init(
-                    accessibilityClient: .accessibilityIsNotGranted,
-                    eventHandlerClient: .noop(enabled: true),
-                    mainQueue: .immediate
+            UserInterfaceView(
+                store: .init(
+                    initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
+                    reducer: userInterfaceReducer,
+                    environment: .init(
+                        accessibilityClient: .accessibilityIsNotGranted,
+                        eventHandlerClient: .noop(enabled: true),
+                        mainQueue: .immediate
+                    )
                 )
             )
-        )
 
+        }
+        .frame(width: 400)
     }
 }

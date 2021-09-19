@@ -12,6 +12,7 @@ struct OnboardingView: View {
                     .font(.largeTitle)
                 Text("Touch-type with one hand.")
                 Spacer()
+                    .frame(height: 10)
                 Text("HalfKeyboard needs your permission to watch your keystrokes.")
                 Button(action: { viewStore.send(.promptForPermission) }) {
                     Text("Grant Accessibility Permissions")

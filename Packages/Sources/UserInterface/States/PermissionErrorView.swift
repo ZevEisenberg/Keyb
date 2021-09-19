@@ -23,7 +23,8 @@ struct PermissionErrorView: View {
             Text(mode.title)
                 .font(.largeTitle)
             Text("HalfKeyboard needs your permission to watch your keystrokes in order to work.")
-            Spacer().frame(height: 10)
+            Spacer()
+                .frame(height: 10)
             Text("1. Open \(boldText("System Preferences")) → \(boldText("Security & Privacy")):")
             OpenPreferencesButton()
             Text("2. Click on \(boldText("Accessibility")).")
@@ -47,6 +48,6 @@ struct PermissionsErrorView_Previews: PreviewProvider {
 
             PermissionErrorView(mode: .problem)
         }
-        .previewLayout(.sizeThatFits)
+        .frame(width: 400)
     }
 }
