@@ -30,8 +30,8 @@ xcconfig_contents = %{// Configuration settings file format documentation can be
 //
 // To commit changes to this file, stop ignoring it with git update-index --no-skip-worktree path_to_this_file
 
-HALFKEYBOARD_BUILD_NUMBER = #{build_number}}
+KEYB_BUILD_NUMBER = #{build_number}}
 
-File.open('./HalfKeyboard/Resources/xcconfig/BuildNumber.xcconfig', 'w') { |file|
+File.open('./Keyb/Resources/xcconfig/BuildNumber.xcconfig', 'w') { |file|
   file.write(xcconfig_contents)
 }

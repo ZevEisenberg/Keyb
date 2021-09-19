@@ -10,16 +10,16 @@
 		7A1705C626E45DCE0009643F /* EventHandlerClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 7A1705C526E45DCE0009643F /* EventHandlerClientLive */; };
 		7AB2E51826E456250044665E /* UserInterface in Frameworks */ = {isa = PBXBuildFile; productRef = 7AB2E51726E456250044665E /* UserInterface */; };
 		7AB2E51A26E457C50044665E /* AccessibilityClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 7AB2E51926E457C50044665E /* AccessibilityClientLive */; };
-		CD3978B224AD1FE100BFCB0D /* HalfKeyboardApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3978B124AD1FE100BFCB0D /* HalfKeyboardApp.swift */; };
+		CD3978B224AD1FE100BFCB0D /* KeybApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3978B124AD1FE100BFCB0D /* KeybApp.swift */; };
 		CD3978B624AD1FE100BFCB0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD3978B524AD1FE100BFCB0D /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CD3978AE24AD1FE100BFCB0D /* HalfKeyboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HalfKeyboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD3978B124AD1FE100BFCB0D /* HalfKeyboardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfKeyboardApp.swift; sourceTree = "<group>"; };
+		CD3978AE24AD1FE100BFCB0D /* Keyb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Keyb.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD3978B124AD1FE100BFCB0D /* KeybApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeybApp.swift; sourceTree = "<group>"; };
 		CD3978B524AD1FE100BFCB0D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD3978BA24AD1FE100BFCB0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CD3978BB24AD1FE100BFCB0D /* HalfKeyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HalfKeyboard.entitlements; sourceTree = "<group>"; };
+		CD3978BB24AD1FE100BFCB0D /* Keyb.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Keyb.entitlements; sourceTree = "<group>"; };
 		CD4CAA762510F4FA0002D69B /* BuildNumber.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BuildNumber.xcconfig; sourceTree = "<group>"; };
 		CD4CAA792510F8770002D69B /* Global.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Global.xcconfig; sourceTree = "<group>"; };
 		CD4CAA7B2510F9A30002D69B /* buildnumber.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = buildnumber.rb; sourceTree = "<group>"; };
@@ -44,7 +44,7 @@
 			isa = PBXGroup;
 			children = (
 				CD7B2C0026C7104400BC77BB /* Packages */,
-				CD3978B024AD1FE100BFCB0D /* HalfKeyboard */,
+				CD3978B024AD1FE100BFCB0D /* Keyb */,
 				CD3978AF24AD1FE100BFCB0D /* Products */,
 				CD7B2C0126C7221A00BC77BB /* Frameworks */,
 			);
@@ -53,19 +53,19 @@
 		CD3978AF24AD1FE100BFCB0D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CD3978AE24AD1FE100BFCB0D /* HalfKeyboard.app */,
+				CD3978AE24AD1FE100BFCB0D /* Keyb.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CD3978B024AD1FE100BFCB0D /* HalfKeyboard */ = {
+		CD3978B024AD1FE100BFCB0D /* Keyb */ = {
 			isa = PBXGroup;
 			children = (
-				CD3978B124AD1FE100BFCB0D /* HalfKeyboardApp.swift */,
+				CD3978B124AD1FE100BFCB0D /* KeybApp.swift */,
 				CD4CAA742510F4570002D69B /* Resources */,
 				CD4CAA7A2510F9A30002D69B /* Scripts */,
 			);
-			path = HalfKeyboard;
+			path = Keyb;
 			sourceTree = "<group>";
 		};
 		CD4CAA742510F4570002D69B /* Resources */ = {
@@ -74,7 +74,7 @@
 				CD4CAA752510F4E40002D69B /* xcconfig */,
 				CD3978B524AD1FE100BFCB0D /* Assets.xcassets */,
 				CD3978BA24AD1FE100BFCB0D /* Info.plist */,
-				CD3978BB24AD1FE100BFCB0D /* HalfKeyboard.entitlements */,
+				CD3978BB24AD1FE100BFCB0D /* Keyb.entitlements */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -106,9 +106,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CD3978AD24AD1FE100BFCB0D /* HalfKeyboard */ = {
+		CD3978AD24AD1FE100BFCB0D /* Keyb */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CD3978BE24AD1FE100BFCB0D /* Build configuration list for PBXNativeTarget "HalfKeyboard" */;
+			buildConfigurationList = CD3978BE24AD1FE100BFCB0D /* Build configuration list for PBXNativeTarget "Keyb" */;
 			buildPhases = (
 				CD4CAA772510F53E0002D69B /* Build Number */,
 				CD3978AA24AD1FE100BFCB0D /* Sources */,
@@ -119,14 +119,14 @@
 			);
 			dependencies = (
 			);
-			name = HalfKeyboard;
+			name = Keyb;
 			packageProductDependencies = (
 				7AB2E51726E456250044665E /* UserInterface */,
 				7AB2E51926E457C50044665E /* AccessibilityClientLive */,
 				7A1705C526E45DCE0009643F /* EventHandlerClientLive */,
 			);
-			productName = HalfKeyboard;
-			productReference = CD3978AE24AD1FE100BFCB0D /* HalfKeyboard.app */;
+			productName = Keyb;
+			productReference = CD3978AE24AD1FE100BFCB0D /* Keyb.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -144,7 +144,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CD3978A924AD1FE100BFCB0D /* Build configuration list for PBXProject "HalfKeyboard" */;
+			buildConfigurationList = CD3978A924AD1FE100BFCB0D /* Build configuration list for PBXProject "Keyb" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -157,7 +157,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CD3978AD24AD1FE100BFCB0D /* HalfKeyboard */,
+				CD3978AD24AD1FE100BFCB0D /* Keyb */,
 			);
 		};
 /* End PBXProject section */
@@ -191,7 +191,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "source .env.ruby\nruby \"$SRCROOT/HalfKeyboard/Scripts/buildnumber.rb\"\n";
+			shellScript = "source .env.ruby\nruby \"$SRCROOT/Keyb/Scripts/buildnumber.rb\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -200,7 +200,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD3978B224AD1FE100BFCB0D /* HalfKeyboardApp.swift in Sources */,
+				CD3978B224AD1FE100BFCB0D /* KeybApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,20 +331,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = HalfKeyboard/Resources/HalfKeyboard.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Keyb/Resources/Keyb.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "${HALFKEYBOARD_BUILD_NUMBER}";
 				DEVELOPMENT_TEAM = 2KJHM26Y46;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = HalfKeyboard/Resources/Info.plist;
+				INFOPLIST_FILE = Keyb/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = "${HALFKEYBOARD_VERSION_NUMBER}";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zeveisenberg.HalfKeyboard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zeveisenberg.Keyb;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -356,20 +356,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = HalfKeyboard/Resources/HalfKeyboard.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Keyb/Resources/Keyb.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "${HALFKEYBOARD_BUILD_NUMBER}";
 				DEVELOPMENT_TEAM = 2KJHM26Y46;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = HalfKeyboard/Resources/Info.plist;
+				INFOPLIST_FILE = Keyb/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = "${HALFKEYBOARD_VERSION_NUMBER}";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zeveisenberg.HalfKeyboard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zeveisenberg.Keyb;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -379,7 +379,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CD3978A924AD1FE100BFCB0D /* Build configuration list for PBXProject "HalfKeyboard" */ = {
+		CD3978A924AD1FE100BFCB0D /* Build configuration list for PBXProject "Keyb" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CD3978BC24AD1FE100BFCB0D /* Debug */,
@@ -388,7 +388,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD3978BE24AD1FE100BFCB0D /* Build configuration list for PBXNativeTarget "HalfKeyboard" */ = {
+		CD3978BE24AD1FE100BFCB0D /* Build configuration list for PBXNativeTarget "Keyb" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CD3978BF24AD1FE100BFCB0D /* Debug */,

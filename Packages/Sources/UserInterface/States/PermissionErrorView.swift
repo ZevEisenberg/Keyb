@@ -22,14 +22,14 @@ struct PermissionErrorView: View {
         VStack(alignment: .leading) {
             Text(mode.title)
                 .font(.headline)
-            Text("HalfKeyboard needs your permission to watch your keystrokes in order to work.")
+            Text("Keyb needs your permission to watch your keystrokes in order to work.")
             Spacer()
                 .frame(height: 10)
             Text("1. Open \(boldText("System Preferences")) → \(boldText("Security & Privacy")):")
             OpenPreferencesButton()
             Text("2. Click on \(boldText("Accessibility")).")
             Text("3. Click the 🔒 at the bottom to unlock it.")
-            Text("4. Check the box next to HalfKeyboard.")
+            Text("4. Check the box next to Keyb.")
         }
         .fixedSize(horizontal: false, vertical: true)
     }

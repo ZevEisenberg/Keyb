@@ -6,7 +6,7 @@ import SwiftUI
 import UserInterface
 
 @main
-struct HalfKeyboardApp: App {
+struct KeybApp: App {
 
     let eventHandler = EventHandler()
 
