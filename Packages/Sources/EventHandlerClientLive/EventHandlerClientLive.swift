@@ -8,7 +8,7 @@ public extension EventHandlerClient {
             isEnabled: {
                 eventHandler.isEnabled
             },
-            startProvisional: { eventHandler.start(mode: .provisional )},
+            startProvisional: { eventHandler.start(mode: .provisional) },
             startActive: { eventHandler.start(mode: .active) },
             stop: eventHandler.stop
         )
