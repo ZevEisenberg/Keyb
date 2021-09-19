@@ -9,15 +9,20 @@ struct OnboardingView: View {
         WithViewStore(store) { viewStore in
             VStack(alignment: .leading) {
                 Text("Welcome to HalfKeyboard")
-                    .font(.largeTitle)
+                    .font(.headline)
                 Text("Touch-type with one hand.")
+                    .font(.subheadline)
                 Spacer()
                     .frame(height: 10)
-                Text("HalfKeyboard needs your permission to watch your keystrokes.")
+                Text("HalfKeyboard needs your permission to watch your keystrokes:")
                 Button(action: { viewStore.send(.promptForPermission) }) {
-                    Text("Grant Accessibility Permissions")
+                    Text("Grant Accessibility Access")
                 }
+                Text("Privacy info: we never collect, store, or transmit anything you type. All text processing is done locally on your computer.")
+                    .font(.subheadline)
             }
+            .fixedSize(horizontal: false, vertical: true)
+
         }
     }
 }
@@ -35,5 +40,6 @@ struct OnboardingView_Previews: PreviewProvider {
                 )
             )
         )
+        .frame(width: 400)
     }
 }

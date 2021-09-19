@@ -9,9 +9,9 @@ struct PermissionErrorView: View {
         var title: String {
             switch self {
             case .awaiting:
-                return "Awaiting Accessibility Permissions"
+                return "Awaiting Accessibility Access"
             case .problem:
-                return "⚠️ Accessibility Permissions Issue"
+                return "⚠️ Accessibility Access Issue"
             }
         }
     }
