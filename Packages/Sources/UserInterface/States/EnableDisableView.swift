@@ -15,9 +15,9 @@ struct EnableDisableView: View {
                         },
                         send: { $0 ? .startObservingEvents : .stopObservingEvents })
                 ) {
-                    Text("Enable half keyboard")
+                    Text("Enable one-handed typing")
                 }
-                Text("When this box is checked, holding the space bar will flip the keyboard horizontally. This allows you to type with one hand. Every time you would use the other hand, instead hold the spacebar and use the equivalent finger.")
+                Text("Hold the space bar to mirror the keyboard horizontally. This allows you to type with one hand. Every time you would use the other hand, instead hold the spacebar and use the equivalent finger.")
             }
         }
     }
