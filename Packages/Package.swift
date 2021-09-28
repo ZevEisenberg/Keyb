@@ -3,37 +3,32 @@
 
 import PackageDescription
 
+extension Target.Dependency {
+    static let accessibilityClient: Self = "AccessibilityClient"
+    static let dockMenuClient: Self = "DockMenuClient"
+    static let eventHandlerClient: Self = "EventHandlerClient"
+    static let humanReadable: Self = "HumanReadable"
+    static let keyProcessor: Self = "KeyProcessor"
+    static let userInterface: Self = "UserInterface"
+
+    static let composableArchitecture: Self = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+}
+
 let package = Package(
     name: "Packages",
     platforms: [
         .macOS(.v11),
     ],
     products: [
-        .library(
-            name: "UserInterface",
-            targets: ["UserInterface"]
-        ),
-        .library(
-            name: "KeyProcessor",
-            targets: ["KeyProcessor"]),
-        .library(
-            name: "AccessibilityClient",
-            targets: ["AccessibilityClient"]),
-        .library(
-            name: "AccessibilityClientLive",
-            targets: ["AccessibilityClientLive"]),
-        .library(
-            name: "EventHandler",
-            targets: ["EventHandler"]),
-        .library(
-            name: "EventHandlerClient",
-            targets: ["EventHandlerClient"]),
-        .library(
-            name: "EventHandlerClientLive",
-            targets: ["EventHandlerClientLive"]),
-        .library(
-            name: "HumanReadable",
-            targets: ["HumanReadable"])
+        .singleTargetLibrary("UserInterface"),
+        .singleTargetLibrary("KeyProcessor"),
+        .singleTargetLibrary("AccessibilityClient"),
+        .singleTargetLibrary("AccessibilityClientLive"),
+        .singleTargetLibrary("EventHandler"),
+        .singleTargetLibrary("EventHandlerClient"),
+        .singleTargetLibrary("EventHandlerClientLive"),
+        .singleTargetLibrary("HumanReadable"),
+        .singleTargetLibrary("DockMenuClient"),
     ],
     dependencies: [
         .package(name: "swift-composable-architecture", url: "https://github.com/pointfreeco/swift-composable-architecture", .upToNextMinor(from: "0.27.0")),
@@ -42,30 +37,33 @@ let package = Package(
         .target(
             name: "UserInterface",
             dependencies: [
-                "AccessibilityClient",
-                "EventHandlerClient",
-                "KeyProcessor",
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .accessibilityClient,
+                .eventHandlerClient,
+                .keyProcessor,
+                .dockMenuClient,
+                .composableArchitecture,
             ]),
         .testTarget(
             name: "UserInterfaceTests",
             dependencies: [
-                "UserInterface",
+                .userInterface,
             ]),
         .target(
             name: "KeyProcessor",
-            dependencies: ["HumanReadable"]),
+            dependencies: [
+                .humanReadable,
+            ]),
         .testTarget(
             name: "KeyProcessorTests",
             dependencies: [
-                "HumanReadable",
-                "KeyProcessor",
+                .humanReadable,
+                .keyProcessor,
             ]),
         .target(
             name: "EventHandler",
             dependencies: [
-                "HumanReadable",
-                "KeyProcessor",
+                .humanReadable,
+                .keyProcessor,
             ]
         ),
         .target(
@@ -77,22 +75,34 @@ let package = Package(
             name: "EventHandlerClientLive",
             dependencies: [
                 "EventHandler",
-                "EventHandlerClient",
+                .eventHandlerClient,
             ]
         ),
         .target(
             name: "AccessibilityClient",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .composableArchitecture,
             ]
         ),
         .target(
             name: "AccessibilityClientLive",
             dependencies: [
-                "AccessibilityClient",
+                .accessibilityClient,
             ]
         ),
         .target(
-            name: "HumanReadable")
+            name: "HumanReadable"),
+        .target(
+            name: "DockMenuClient",
+            dependencies: [
+                .composableArchitecture,
+            ]
+        ),
     ]
 )
+
+extension Product {
+    static func singleTargetLibrary(_ name: String) -> Product {
+        .library(name: name, targets: [name])
+    }
+}

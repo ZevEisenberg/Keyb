@@ -1,6 +1,8 @@
+import Combine
+
 public struct EventHandlerClient {
 
-    public var isEnabled: () -> Bool
+    public var isEnabled: () -> CurrentValueSubject<Bool, Never>
 
     /// Attempt to start the event handler provisionally in order to force a system accessibility prompt.
     ///
@@ -15,7 +17,7 @@ public struct EventHandlerClient {
     public var stop: () -> Void
 
     public init(
-        isEnabled: @escaping () -> Bool,
+        isEnabled: @escaping () -> CurrentValueSubject<Bool, Never>,
         startProvisional: @escaping () -> Bool,
         startActive: @escaping () -> Bool,
         stop: @escaping () -> Void
@@ -31,7 +33,7 @@ public extension EventHandlerClient {
 
     static func noop(enabled: Bool) -> Self {
         .init(
-            isEnabled: { enabled },
+            isEnabled: { CurrentValueSubject(enabled) },
             startProvisional: { true },
             startActive: { true },
             stop: { }

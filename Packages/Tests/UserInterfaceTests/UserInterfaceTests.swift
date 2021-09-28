@@ -1,4 +1,5 @@
 import AccessibilityClient
+import Combine
 import ComposableArchitecture
 import EventHandlerClient
 import UserInterface
@@ -10,7 +11,8 @@ final class UserInterfaceTests: XCTestCase {
         let mainQueue = DispatchQueue.test
 
         var currentlyTrusted = false
-        var eventHandlerIsRunning = false
+        let eventHandlerIsRunning: CurrentValueSubject<Bool, Never> = .init(false)
+        let dockMenuItemIsChecked: CurrentValueSubject<Bool, Never> = .init(false)
 
         let store = TestStore(
             initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
@@ -26,11 +28,19 @@ final class UserInterfaceTests: XCTestCase {
                         return true
                     },
                     startActive: {
-                        eventHandlerIsRunning = true
+                        eventHandlerIsRunning.value = true
                         return true
                     },
                     stop: {
-                        eventHandlerIsRunning = false
+                        eventHandlerIsRunning.value = false
+                    }
+                ),
+                dockMenuClient: .init(
+                    isRunning: { dockMenuItemIsChecked.eraseToEffect() },
+                    updateIsRunning: { newValue in
+                        Effect.fireAndForget {
+                            dockMenuItemIsChecked.value = newValue
+                        }
                     }
                 ),
                 mainQueue: mainQueue.eraseToAnyScheduler()
@@ -55,19 +65,22 @@ final class UserInterfaceTests: XCTestCase {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
 
-        XCTAssertTrue(eventHandlerIsRunning)
+        XCTAssertTrue(eventHandlerIsRunning.value)
+        XCTAssertTrue(dockMenuItemIsChecked.value)
 
         store.send(.stopObservingEvents) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
-        XCTAssertFalse(eventHandlerIsRunning)
+        XCTAssertFalse(eventHandlerIsRunning.value)
+        XCTAssertFalse(dockMenuItemIsChecked.value)
     }
 
     func testAlreadyHasPermission() {
         let mainQueue = DispatchQueue.test
 
-        var eventHandlerIsRunning = false
+        let eventHandlerIsRunning: CurrentValueSubject<Bool, Never> = .init(false)
+        let dockMenuItemIsChecked: CurrentValueSubject<Bool, Never> = .init(false)
 
         let store = TestStore(
             initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
@@ -78,11 +91,19 @@ final class UserInterfaceTests: XCTestCase {
                     isEnabled: { eventHandlerIsRunning },
                     startProvisional: { true },
                     startActive: {
-                        eventHandlerIsRunning = true
+                        eventHandlerIsRunning.value = true
                         return true
                     },
                     stop: {
-                        eventHandlerIsRunning = false
+                        eventHandlerIsRunning.value = false
+                    }
+                ),
+                dockMenuClient: .init(
+                    isRunning: { dockMenuItemIsChecked.eraseToEffect() },
+                    updateIsRunning: { newValue in
+                        Effect.fireAndForget {
+                            dockMenuItemIsChecked.value = newValue
+                        }
                     }
                 ),
                 mainQueue: mainQueue.eraseToAnyScheduler()
@@ -98,13 +119,15 @@ final class UserInterfaceTests: XCTestCase {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
 
-        XCTAssertTrue(eventHandlerIsRunning)
+        XCTAssertTrue(eventHandlerIsRunning.value)
+        XCTAssertTrue(dockMenuItemIsChecked.value)
 
         store.send(.stopObservingEvents) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
-        XCTAssertFalse(eventHandlerIsRunning)
+        XCTAssertFalse(eventHandlerIsRunning.value)
+        XCTAssertFalse(dockMenuItemIsChecked.value)
     }
 
 }
