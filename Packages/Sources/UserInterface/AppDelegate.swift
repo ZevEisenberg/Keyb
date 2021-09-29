@@ -25,6 +25,7 @@ extension UserInterfaceState {
         }
         set {
             isRunning = newValue.isDockMenuItemChecked
+            // We don't update permission here because checking or unchecking the menu item doesn't change whether we have permission.
         }
     }
 }
