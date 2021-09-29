@@ -15,7 +15,7 @@ final class UserInterfaceTests: XCTestCase {
 
         let store = TestStore(
             initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-            reducer: userInterfaceReducer,
+            reducer: appReducer,
             environment: .init(
                 accessibilityClient: .init(isCurrentlyTrusted: {
                     currentlyTrusted
@@ -72,7 +72,7 @@ final class UserInterfaceTests: XCTestCase {
 
         let store = TestStore(
             initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-            reducer: userInterfaceReducer,
+            reducer: appReducer,
             environment: .init(
                 accessibilityClient: .init(isCurrentlyTrusted: { true }),
                 eventHandlerClient: .init(

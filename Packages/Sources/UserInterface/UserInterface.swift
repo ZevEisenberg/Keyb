@@ -74,7 +74,12 @@ public struct UserInterfaceEnvironment {
     }
 }
 
-public let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceAction, UserInterfaceEnvironment> { state, action, environment in
+public let appReducer = Reducer<UserInterfaceState, UserInterfaceAction, UserInterfaceEnvironment>.combine([
+    userInterfaceReducer,
+    appDelegateReducer.pullback(state: \.appDelegate, action: /.self, environment: { _ in }),
+])
+
+let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceAction, UserInterfaceEnvironment> { state, action, environment in
     struct TimerID: Hashable {}
 
     switch action {
@@ -178,7 +183,7 @@ struct UserInterfaceView_Previews: PreviewProvider {
         UserInterfaceView(
             store: .init(
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsEnabled,
                     eventHandlerClient: .noop(enabled: false),
@@ -190,7 +195,7 @@ struct UserInterfaceView_Previews: PreviewProvider {
         UserInterfaceView(
             store: .init(
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: true)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsEnabled,
                     eventHandlerClient: .noop(enabled: true),
@@ -202,7 +207,7 @@ struct UserInterfaceView_Previews: PreviewProvider {
         UserInterfaceView(
             store: .init(
                 initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsNotGranted,
                     eventHandlerClient: .noop(enabled: true),
@@ -214,7 +219,7 @@ struct UserInterfaceView_Previews: PreviewProvider {
         UserInterfaceView(
             store: .init(
                 initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsNotGranted,
                     eventHandlerClient: .noop(enabled: true),

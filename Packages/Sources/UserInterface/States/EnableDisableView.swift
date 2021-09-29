@@ -29,7 +29,7 @@ struct EnableDisableView_Previews: PreviewProvider {
         EnableDisableView(
             store: .init(
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsNotGranted,
                     eventHandlerClient: .noop(enabled: false),

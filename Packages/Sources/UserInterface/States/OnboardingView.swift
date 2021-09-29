@@ -31,7 +31,7 @@ struct OnboardingView_Previews: PreviewProvider {
         OnboardingView(
             store: .init(
                 initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsNotGranted,
                     eventHandlerClient: .noop(enabled: false),
