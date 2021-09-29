@@ -5,7 +5,6 @@ import PackageDescription
 
 extension Target.Dependency {
     static let accessibilityClient: Self = "AccessibilityClient"
-    static let dockMenuClient: Self = "DockMenuClient"
     static let eventHandlerClient: Self = "EventHandlerClient"
     static let humanReadable: Self = "HumanReadable"
     static let keyProcessor: Self = "KeyProcessor"
@@ -28,7 +27,6 @@ let package = Package(
         .singleTargetLibrary("EventHandlerClient"),
         .singleTargetLibrary("EventHandlerClientLive"),
         .singleTargetLibrary("HumanReadable"),
-        .singleTargetLibrary("DockMenuClient"),
     ],
     dependencies: [
         .package(name: "swift-composable-architecture", url: "https://github.com/pointfreeco/swift-composable-architecture", .upToNextMinor(from: "0.27.0")),
@@ -40,7 +38,6 @@ let package = Package(
                 .accessibilityClient,
                 .eventHandlerClient,
                 .keyProcessor,
-                .dockMenuClient,
                 .composableArchitecture,
             ]),
         .testTarget(
@@ -92,12 +89,6 @@ let package = Package(
         ),
         .target(
             name: "HumanReadable"),
-        .target(
-            name: "DockMenuClient",
-            dependencies: [
-                .composableArchitecture,
-            ]
-        ),
     ]
 )
 

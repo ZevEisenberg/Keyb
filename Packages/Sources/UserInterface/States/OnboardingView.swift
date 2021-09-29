@@ -35,7 +35,6 @@ struct OnboardingView_Previews: PreviewProvider {
                 environment: .init(
                     accessibilityClient: .accessibilityIsNotGranted,
                     eventHandlerClient: .noop(enabled: false),
-                    dockMenuClient: .noop(isRunning: false),
                     mainQueue: .immediate
                 )
             )
