@@ -12,7 +12,6 @@
 		7AB2E51A26E457C50044665E /* AccessibilityClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 7AB2E51926E457C50044665E /* AccessibilityClientLive */; };
 		CD3978B224AD1FE100BFCB0D /* KeybApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3978B124AD1FE100BFCB0D /* KeybApp.swift */; };
 		CD3978B624AD1FE100BFCB0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD3978B524AD1FE100BFCB0D /* Assets.xcassets */; };
-		CDBCD73A26F7DDA100BD4340 /* DockMenuClient in Frameworks */ = {isa = PBXBuildFile; productRef = CDBCD73926F7DDA100BD4340 /* DockMenuClient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +34,6 @@
 				7AB2E51A26E457C50044665E /* AccessibilityClientLive in Frameworks */,
 				7A1705C626E45DCE0009643F /* EventHandlerClientLive in Frameworks */,
 				7AB2E51826E456250044665E /* UserInterface in Frameworks */,
-				CDBCD73A26F7DDA100BD4340 /* DockMenuClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,7 +124,6 @@
 				7AB2E51726E456250044665E /* UserInterface */,
 				7AB2E51926E457C50044665E /* AccessibilityClientLive */,
 				7A1705C526E45DCE0009643F /* EventHandlerClientLive */,
-				CDBCD73926F7DDA100BD4340 /* DockMenuClient */,
 			);
 			productName = Keyb;
 			productReference = CD3978AE24AD1FE100BFCB0D /* Keyb.app */;
@@ -414,10 +411,6 @@
 		7AB2E51926E457C50044665E /* AccessibilityClientLive */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AccessibilityClientLive;
-		};
-		CDBCD73926F7DDA100BD4340 /* DockMenuClient */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DockMenuClient;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

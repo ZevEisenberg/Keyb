@@ -1,7 +1,6 @@
 import AccessibilityClientLive
 import Combine
 import ComposableArchitecture
-import DockMenuClient
 import EventHandler
 import EventHandlerClientLive
 import SwiftUI
@@ -12,55 +11,57 @@ struct KeybApp: App {
 
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    let eventHandler = EventHandler()
-
     var body: some Scene {
         WindowGroup {
-            UserInterfaceView(store: Store(
-                initialState: UserInterfaceState(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-                reducer: userInterfaceReducer,
-                environment: .init(
-                    accessibilityClient: .live,
-                    eventHandlerClient: .live(with: eventHandler),
-                    dockMenuClient: .init(
-                        isRunning: {
-                            appDelegate.isDockMenuItemChecked.eraseToEffect()
-                        },
-                        updateIsRunning: { newValue in
-                            Effect.fireAndForget {
-                                appDelegate.isDockMenuItemChecked.value = newValue
-                            }
-                        }
-                    ),
-                    mainQueue: .main
-                )
-            ))
+            UserInterfaceView(store: appDelegate.store)
         }
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate {
 
-    var isDockMenuItemChecked: CurrentValueSubject<Bool, Never> = .init(false)
+    let eventHandler = EventHandler()
+
+    override init() {
+        store = Store(
+            initialState: UserInterfaceState(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
+            reducer: appReducer,
+            environment: .init(
+                accessibilityClient: .live,
+                eventHandlerClient: .live(with: eventHandler),
+                mainQueue: .main
+            )
+        )
+        super.init()
+    }
+
+    let store: Store<UserInterfaceState, UserInterfaceAction>
+
+    lazy var viewStore = ViewStore(store.scope(state: \.appDelegate))
 
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        guard viewStore.hasPermission
+        else { return nil }
+
+        let isChecked = viewStore.isDockMenuItemChecked
         let menu = NSMenu()
         let item = NSMenuItem(
             title: "Enable One-Handed Typing",
-            action: isDockMenuItemChecked.value ? #selector(disable) : #selector(enable),
+            action: isChecked ? #selector(disable) : #selector(enable),
             keyEquivalent: ""
         )
         // Checkmark if currently enabled
-        item.state = isDockMenuItemChecked.value ? .on : .off
+        item.state = isChecked ? .on : .off
         menu.addItem(item)
         return menu
     }
 
     @objc func enable() {
-        isDockMenuItemChecked.value = true
+        viewStore.send(.changeObservingState(observing: true))
+
     }
 
     @objc func disable() {
-        isDockMenuItemChecked.value = false
+        viewStore.send(.changeObservingState(observing: false))
     }
 }

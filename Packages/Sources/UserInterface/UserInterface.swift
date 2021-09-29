@@ -1,5 +1,4 @@
 import AccessibilityClient
-import DockMenuClient
 import EventHandlerClient
 import ComposableArchitecture
 import SwiftUI
@@ -23,8 +22,27 @@ public struct UserInterfaceState: Equatable {
                 return false
             }
         }
+
+        public var hasPermission: Bool {
+            if case .hasAccessibilityPermission = self {
+                return true
+            }
+            return false
+        }
     }
     public var mode: Mode
+
+    public var isRunning: Bool {
+        get { mode.isRunning }
+        set {
+            if case .hasAccessibilityPermission = mode {
+                mode = .hasAccessibilityPermission(isRunning: newValue)
+            }
+            else {
+                // no-op, since if we have no permissions, we can't ever be running
+            }
+        }
+    }
 
     public init(mode: Mode) {
         self.mode = mode
@@ -35,8 +53,7 @@ public enum UserInterfaceAction: Equatable {
     case didAppear
     case promptForPermission
     case permissionChanged(hasAccessibilityPermission: Bool)
-    case startObservingEvents
-    case stopObservingEvents
+    case changeObservingState(observing: Bool)
     case permissionsError
     case checkForPermissions
 }
@@ -44,38 +61,31 @@ public enum UserInterfaceAction: Equatable {
 public struct UserInterfaceEnvironment {
     public var accessibilityClient: AccessibilityClient
     public var eventHandlerClient: EventHandlerClient
-    public var dockMenuClient: DockMenuClient
     public var mainQueue: AnySchedulerOf<DispatchQueue>
 
     public init(
         accessibilityClient: AccessibilityClient,
         eventHandlerClient: EventHandlerClient,
-        dockMenuClient: DockMenuClient,
         mainQueue: AnySchedulerOf<DispatchQueue>
     ) {
         self.accessibilityClient = accessibilityClient
         self.eventHandlerClient = eventHandlerClient
-        self.dockMenuClient = dockMenuClient
         self.mainQueue = mainQueue
     }
 }
 
-public let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceAction, UserInterfaceEnvironment> { state, action, environment in
+public let appReducer = Reducer<UserInterfaceState, UserInterfaceAction, UserInterfaceEnvironment>.combine([
+    userInterfaceReducer,
+    appDelegateReducer.pullback(state: \.appDelegate, action: /.self, environment: { _ in }),
+])
+
+let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceAction, UserInterfaceEnvironment> { state, action, environment in
     struct TimerID: Hashable {}
 
     switch action {
     case .didAppear:
-        return .concatenate(
-            // Check for permissions
-            .init(value: .checkForPermissions),
+        return .init(value: .checkForPermissions)
 
-            // Connect to dock menu client
-            environment.dockMenuClient
-                .isRunning()
-                .map { $0 ? .startObservingEvents : .stopObservingEvents }
-                .receive(on: environment.mainQueue.eraseToAnyScheduler())
-                .eraseToEffect()
-        )
     case .checkForPermissions:
         let isCurrentlyTrusted = environment.accessibilityClient.isCurrentlyTrusted()
         return .init(value: .permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
@@ -114,23 +124,19 @@ public let userInterfaceReducer = Reducer<UserInterfaceState, UserInterfaceActio
         }
         return .concatenate(effects)
 
-    case .startObservingEvents:
+    case .changeObservingState(observing: true):
         let startSuccess = environment.eventHandlerClient.startActive()
         state.mode = .hasAccessibilityPermission(isRunning: startSuccess)
         if startSuccess {
-            return environment.dockMenuClient
-                .updateIsRunning(true)
-                .fireAndForget()
+            return .none
         } else {
             return .init(value: .permissionsError)
         }
 
-    case .stopObservingEvents:
+    case .changeObservingState(observing: false):
         state.mode = .hasAccessibilityPermission(isRunning: false)
         environment.eventHandlerClient.stop()
-        return environment.dockMenuClient
-            .updateIsRunning(false)
-            .fireAndForget()
+        return .none
 
     case .permissionsError:
         state.mode = .noAccessibilityPermission(.permissionError)
@@ -177,11 +183,10 @@ struct UserInterfaceView_Previews: PreviewProvider {
         UserInterfaceView(
             store: .init(
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsEnabled,
                     eventHandlerClient: .noop(enabled: false),
-                    dockMenuClient: .noop(isRunning: false),
                     mainQueue: .immediate
                 )
             )
@@ -190,11 +195,10 @@ struct UserInterfaceView_Previews: PreviewProvider {
         UserInterfaceView(
             store: .init(
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: true)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsEnabled,
                     eventHandlerClient: .noop(enabled: true),
-                    dockMenuClient: .noop(isRunning: true),
                     mainQueue: .immediate
                 )
             )
@@ -203,11 +207,10 @@ struct UserInterfaceView_Previews: PreviewProvider {
         UserInterfaceView(
             store: .init(
                 initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsNotGranted,
                     eventHandlerClient: .noop(enabled: true),
-                    dockMenuClient: .noop(isRunning: false),
                     mainQueue: .immediate
                 )
             )
@@ -216,11 +219,10 @@ struct UserInterfaceView_Previews: PreviewProvider {
         UserInterfaceView(
             store: .init(
                 initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsNotGranted,
                     eventHandlerClient: .noop(enabled: true),
-                    dockMenuClient: .noop(isRunning: false),
                     mainQueue: .immediate
                 )
             )

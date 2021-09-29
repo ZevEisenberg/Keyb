@@ -12,11 +12,10 @@ final class UserInterfaceTests: XCTestCase {
 
         var currentlyTrusted = false
         let eventHandlerIsRunning: CurrentValueSubject<Bool, Never> = .init(false)
-        let dockMenuItemIsChecked: CurrentValueSubject<Bool, Never> = .init(false)
 
         let store = TestStore(
             initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-            reducer: userInterfaceReducer,
+            reducer: appReducer,
             environment: .init(
                 accessibilityClient: .init(isCurrentlyTrusted: {
                     currentlyTrusted
@@ -33,14 +32,6 @@ final class UserInterfaceTests: XCTestCase {
                     },
                     stop: {
                         eventHandlerIsRunning.value = false
-                    }
-                ),
-                dockMenuClient: .init(
-                    isRunning: { dockMenuItemIsChecked.eraseToEffect() },
-                    updateIsRunning: { newValue in
-                        Effect.fireAndForget {
-                            dockMenuItemIsChecked.value = newValue
-                        }
                     }
                 ),
                 mainQueue: mainQueue.eraseToAnyScheduler()
@@ -61,30 +52,27 @@ final class UserInterfaceTests: XCTestCase {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
-        store.send(.startObservingEvents) {
+        store.send(.changeObservingState(observing: true)) {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
 
         XCTAssertTrue(eventHandlerIsRunning.value)
-        XCTAssertTrue(dockMenuItemIsChecked.value)
 
-        store.send(.stopObservingEvents) {
+        store.send(.changeObservingState(observing: false)) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
         XCTAssertFalse(eventHandlerIsRunning.value)
-        XCTAssertFalse(dockMenuItemIsChecked.value)
     }
 
     func testAlreadyHasPermission() {
         let mainQueue = DispatchQueue.test
 
         let eventHandlerIsRunning: CurrentValueSubject<Bool, Never> = .init(false)
-        let dockMenuItemIsChecked: CurrentValueSubject<Bool, Never> = .init(false)
 
         let store = TestStore(
             initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-            reducer: userInterfaceReducer,
+            reducer: appReducer,
             environment: .init(
                 accessibilityClient: .init(isCurrentlyTrusted: { true }),
                 eventHandlerClient: .init(
@@ -98,14 +86,6 @@ final class UserInterfaceTests: XCTestCase {
                         eventHandlerIsRunning.value = false
                     }
                 ),
-                dockMenuClient: .init(
-                    isRunning: { dockMenuItemIsChecked.eraseToEffect() },
-                    updateIsRunning: { newValue in
-                        Effect.fireAndForget {
-                            dockMenuItemIsChecked.value = newValue
-                        }
-                    }
-                ),
                 mainQueue: mainQueue.eraseToAnyScheduler()
             )
         )
@@ -115,19 +95,17 @@ final class UserInterfaceTests: XCTestCase {
 
         mainQueue.advance(by: 5)
 
-        store.send(.startObservingEvents) {
+        store.send(.changeObservingState(observing: true)) {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
 
         XCTAssertTrue(eventHandlerIsRunning.value)
-        XCTAssertTrue(dockMenuItemIsChecked.value)
 
-        store.send(.stopObservingEvents) {
+        store.send(.changeObservingState(observing: false)) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
         XCTAssertFalse(eventHandlerIsRunning.value)
-        XCTAssertFalse(dockMenuItemIsChecked.value)
     }
 
 }

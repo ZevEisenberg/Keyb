@@ -13,7 +13,7 @@ struct EnableDisableView: View {
                         get: { userInterfaceState in
                             userInterfaceState.mode == .hasAccessibilityPermission(isRunning: true)
                         },
-                        send: { $0 ? .startObservingEvents : .stopObservingEvents })
+                        send: UserInterfaceAction.changeObservingState(observing:))
                 ) {
                     Text("Enable one-handed typing")
                 }
@@ -29,11 +29,10 @@ struct EnableDisableView_Previews: PreviewProvider {
         EnableDisableView(
             store: .init(
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: userInterfaceReducer,
+                reducer: appReducer,
                 environment: .init(
                     accessibilityClient: .accessibilityIsNotGranted,
                     eventHandlerClient: .noop(enabled: false),
-                    dockMenuClient: .noop(isRunning: false),
                     mainQueue: .immediate
                 )
             )
