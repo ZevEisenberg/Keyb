@@ -6,8 +6,6 @@ import EventHandlerClientLive
 import SwiftUI
 import UserInterface
 
-let eventHandler = EventHandler()
-
 @main
 struct KeybApp: App {
 
@@ -22,15 +20,22 @@ struct KeybApp: App {
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
-    let store = Store(
-        initialState: UserInterfaceState(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-        reducer: appReducer,
-        environment: .init(
-            accessibilityClient: .live,
-            eventHandlerClient: .live(with: eventHandler),
-            mainQueue: .main
+    let eventHandler = EventHandler()
+
+    override init() {
+        store = Store(
+            initialState: UserInterfaceState(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
+            reducer: appReducer,
+            environment: .init(
+                accessibilityClient: .live,
+                eventHandlerClient: .live(with: eventHandler),
+                mainQueue: .main
+            )
         )
-    )
+        super.init()
+    }
+
+    let store: Store<UserInterfaceState, UserInterfaceAction>
 
     lazy var viewStore = ViewStore(store.scope(state: \.appDelegate))
 
