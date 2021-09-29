@@ -16,7 +16,7 @@ struct KeybApp: App {
     let store = Store(
         initialState: UserInterfaceState(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
         reducer: userInterfaceReducer
-            .combined(with: appDelegateReducer.pullback(state: \.appDelegate, action: /.self, environment: { _ in })).debug(),
+            .combined(with: appDelegateReducer.pullback(state: \.appDelegate, action: /.self, environment: { _ in })),
         environment: .init(
             accessibilityClient: .live,
             eventHandlerClient: .live(with: eventHandler),
