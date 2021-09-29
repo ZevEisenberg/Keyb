@@ -44,7 +44,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         else { return nil }
 
         let isChecked = viewStore.isDockMenuItemChecked
-        print("checked:", isChecked)
         let menu = NSMenu()
         let item = NSMenuItem(
             title: "Enable One-Handed Typing",
