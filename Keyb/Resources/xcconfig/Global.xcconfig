@@ -3,4 +3,4 @@
 
 #include "./BuildNumber.xcconfig"
 
-KEYB_BUILD_NUMBER = 1.2
+KEYB_VERSION_NUMBER = 1.2
