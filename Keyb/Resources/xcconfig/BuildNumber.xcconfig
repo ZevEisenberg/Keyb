@@ -7,4 +7,6 @@
 //
 // To commit changes to this file, stop ignoring it with git update-index --no-skip-worktree path_to_this_file
 
-KEYB_BUILD_NUMBER = 1.0
+KEYB_BUILD_NUMBER_Debug = 0.1
+KEYB_BUILD_NUMBER_Release = 0.1
+KEYB_BUILD_NUMBER = $(KEYB_BUILD_NUMBER_$(CONFIGURATION))

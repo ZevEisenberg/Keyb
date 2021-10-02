@@ -14,12 +14,9 @@ g = Git.open('.', :log => logger)
 # https://github.com/ruby-git/ruby-git/issues/182
 commit_count = g.log(nil).count
 
-if ENV['CONFIGURATION'] == 'Debug'
-  branch_name = g.current_branch
-  build_number = "#{commit_count}-#{branch_name}"
-else
-  build_number = "#{commit_count}"
-end
+branch_name = g.current_branch
+build_number_debug = "#{commit_count}-#{branch_name}"
+build_number_release = "#{commit_count}"
 
 xcconfig_contents = %{// Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
@@ -30,7 +27,9 @@ xcconfig_contents = %{// Configuration settings file format documentation can be
 //
 // To commit changes to this file, stop ignoring it with git update-index --no-skip-worktree path_to_this_file
 
-KEYB_BUILD_NUMBER = #{build_number}
+KEYB_BUILD_NUMBER_Debug = #{build_number_debug}
+KEYB_BUILD_NUMBER_Release = #{build_number_release}
+KEYB_BUILD_NUMBER = $(KEYB_BUILD_NUMBER_$(CONFIGURATION))
 }
 
 File.open('./Keyb/Resources/xcconfig/BuildNumber.xcconfig', 'w') { |file|
