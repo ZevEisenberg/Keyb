@@ -11,9 +11,20 @@ struct KeybApp: App {
 
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    @Environment(\.openURL) var openURL
+
     var body: some Scene {
-        WindowGroup {
+        WindowGroup("Keyb") {
             UserInterfaceView(store: appDelegate.store)
+        }
+        .commands {
+            CommandGroup(replacing: .help) {
+                Button(action: {
+                    openURL(URL(string: "https://zeveisenberg.com/keyb")!)
+                }, label: {
+                    Text("Keyb Help")
+                })
+            }
         }
     }
 }
