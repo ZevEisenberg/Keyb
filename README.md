@@ -2,11 +2,13 @@
 
 <img src="./Keyb/Resources/Assets.xcassets/AppIcon.appiconset/Mac%20App%20128pt@2x.png" width=128 alt="Keyb app icon" />
 
-This is a proof-of-concept app that lets you type more easily with one hand on a Mac. It was inspired by the concept of a [half-QWERTY keyboard](https://www.billbuxton.com/matias93.html), plus the need to be able to type with one hand while [holding a baby](https://twitter.com/zeveisenberg/status/1268585275346898950). If you often find yourself typing with one hand, this app may be useful to you.
+Keyb is a Mac app that lets you type more easily with one hand. It was inspired by the concept of a [half-QWERTY keyboard](https://www.billbuxton.com/matias93.html), plus the need to be able to type with one hand while [holding a baby](https://twitter.com/zeveisenberg/status/1268585275346898950). If you often find yourself typing with one hand, this app may be useful to you.
 
 ## Usage
 
-Download the [latest release](https://github.com/ZevEisenberg/Keyb/releases/latest/download/Keyb.app.zip) or build it from source. You will need to grant accessibility permissions for the app to work. There is limited UI to help you with this, but if you’re using Catalina or later, you know what’s up. ⚠️ **You will have to relaunch the app after enabling permissions.**
+Download the [latest release](https://github.com/ZevEisenberg/Keyb/releases/latest/download/Keyb.app.zip) or build it from source. The app is also pending review in the Mac App Store. You will need to grant accessibility permissions for the app to work.
+
+![Graphic illustrating how the left and right halves of the keyboard layout mirror and swap places when the spacebar is held down.](Graphics/Layout Explanation.png)
 
 The app works by mirroring the keyboard left-to-right when the spacebar is held down. After enabling the app, put one hand on the keyboard and type normally. When you would use the other hand, simply hold the spacebar while making the equivalent motion with the hand that's on the keyboard. Try it for a few minutes and you should get the hang of it. Try it for a few hours and you’ll probably be able to touch-type.
 
