@@ -24,9 +24,9 @@ The app has been tested only with a US-English QWERTY layout. It shouldn’t be 
 
 ## Future
 
-It would be great to add a real UI and tutorial. But even better, it would be great if operating system venders added this as an accessibility feature. I’m releasing it under the MIT license in the hopes that they (or a third party) will take the idea and run with it. It’s easy enough to run it as an app, but building it into the system would be pretty slick.
+It would be great if operating system venders added this as an accessibility feature. I’m releasing it under the MIT license in the hopes that they (or a third party) will take the idea and run with it. It’s easy enough to run it as an app, but building it into the system would be pretty slick. The app works well enough on macOS, but it would currently be impossible to ship on iPadOS (for use with external keyboards), except to allow one-handed typing in a single app. Only Apple can build this kind of functionality into the OS, or provide accessibility extension points to allow third-party developers to build such an app, but so far they have done neither.
 
-(If you decide to do this, you might want to check with [Matias](https://matias.ca/halfkeyboard/) to see if they have any annoying patents or copyrights. The [original patent](https://patents.google.com/patent/EP0489792B1) appears to have expired in 2010, but I am not a lawyer.)
+(If you decide to ship something based on this, you might want to check with [Matias](https://matias.ca/halfkeyboard/) to see if they have any  patents or copyrights. The [original patent](https://patents.google.com/patent/EP0489792B1) appears to have expired in 2010, but I am not a lawyer.)
 
 ## Development
 
