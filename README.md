@@ -6,7 +6,7 @@ Keyb is a Mac app that lets you type more easily with one hand. It was inspired 
 
 ## Usage
 
-Download the [latest release](https://github.com/ZevEisenberg/Keyb/releases/latest/download/Keyb.app.zip) or build it from source. The app is also pending review in the Mac App Store. You will need to grant accessibility permissions for the app to work.
+Download the [latest release](https://apps.apple.com/us/app/keyb-the-one-handed-keyboard/id1588579580) from the Mac App Store. It’s free!
 
 ![Graphic illustrating how the left and right halves of the keyboard layout mirror and swap places when the spacebar is held down.](Graphics/Layout%20Explanation.png)
 
