@@ -13,8 +13,8 @@ public struct AccessibilityClient {
 
 public extension AccessibilityClient {
 
-    static let unimplemented: Self = .init(
-        isCurrentlyTrusted: XCTUnimplemented("\(Self.self).isCurrentlyTrusted")
+    static let testValue: Self = .init(
+        isCurrentlyTrusted: unimplemented("\(Self.self).isCurrentlyTrusted")
     )
 
     static var accessibilityIsEnabled: Self {
@@ -34,9 +34,7 @@ public extension AccessibilityClient {
     }
 }
 
-extension AccessibilityClient: TestDependencyKey {
-    public static let testValue = AccessibilityClient.unimplemented
-}
+extension AccessibilityClient: TestDependencyKey {}
 
 public extension DependencyValues {
     var accessibilityClient: AccessibilityClient {

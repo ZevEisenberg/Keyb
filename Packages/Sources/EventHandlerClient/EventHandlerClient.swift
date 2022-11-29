@@ -42,20 +42,18 @@ public extension EventHandlerClient {
         )
     }
 
-    static var unimplemented: Self {
+    static var testValue: Self {
         EventHandlerClient(
-            isEnabled: XCTUnimplemented("\(Self.self).isEnabled", placeholder: CurrentValueSubject<Bool, Never>(false)),
-            startProvisional: XCTUnimplemented("\(Self.self).startProvisional"),
-            startActive: XCTUnimplemented("\(Self.self).startActive", placeholder: false),
-            stop: XCTUnimplemented("\(Self.self).startActive", placeholder: ())
+            isEnabled: unimplemented("\(Self.self).isEnabled", placeholder: CurrentValueSubject<Bool, Never>(false)),
+            startProvisional: unimplemented("\(Self.self).startProvisional"),
+            startActive: unimplemented("\(Self.self).startActive", placeholder: false),
+            stop: unimplemented("\(Self.self).startActive", placeholder: ())
         )
     }
 
 }
 
-extension EventHandlerClient: TestDependencyKey {
-    public static let testValue = EventHandlerClient.unimplemented
-}
+extension EventHandlerClient: TestDependencyKey {}
 
 public extension DependencyValues {
     var eventHandlerClient: EventHandlerClient {
