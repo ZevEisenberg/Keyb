@@ -1,3 +1,6 @@
+import Dependencies
+import XCTestDynamicOverlay
+
 public struct AccessibilityClient {
 
     public var isCurrentlyTrusted: () -> Bool
@@ -9,6 +12,10 @@ public struct AccessibilityClient {
 }
 
 public extension AccessibilityClient {
+
+    static let unimplemented: Self = .init(
+        isCurrentlyTrusted: XCTUnimplemented("\(Self.self).isCurrentlyTrusted")
+    )
 
     static var accessibilityIsEnabled: Self {
         .init(
@@ -24,5 +31,16 @@ public extension AccessibilityClient {
                 false
             }
         )
+    }
+}
+
+extension AccessibilityClient: TestDependencyKey {
+    public static let testValue = AccessibilityClient.unimplemented
+}
+
+public extension DependencyValues {
+    var accessibilityClient: AccessibilityClient {
+        get { self[AccessibilityClient.self] }
+        set { self[AccessibilityClient.self] = newValue }
     }
 }

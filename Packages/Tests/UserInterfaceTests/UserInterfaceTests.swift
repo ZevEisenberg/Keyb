@@ -15,12 +15,10 @@ final class UserInterfaceTests: XCTestCase {
 
         let store = TestStore(
             initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-            reducer: appReducer,
-            environment: .init(
-                accessibilityClient: .init(isCurrentlyTrusted: {
-                    currentlyTrusted
-                }),
-                eventHandlerClient: .init(
+            reducer: AppFeature(),
+            prepareDependencies: {
+                $0.accessibilityClient = .init(isCurrentlyTrusted: { currentlyTrusted })
+                $0.eventHandlerClient = .init(
                     isEnabled: { eventHandlerIsRunning },
                     startProvisional: {
                         currentlyTrusted = true
@@ -33,9 +31,9 @@ final class UserInterfaceTests: XCTestCase {
                     stop: {
                         eventHandlerIsRunning.value = false
                     }
-                ),
-                mainQueue: mainQueue.eraseToAnyScheduler()
-            )
+                )
+                $0.mainQueue = mainQueue.eraseToAnyScheduler()
+            }
         )
 
         store.send(.checkForPermissions)
@@ -72,10 +70,10 @@ final class UserInterfaceTests: XCTestCase {
 
         let store = TestStore(
             initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-            reducer: appReducer,
-            environment: .init(
-                accessibilityClient: .init(isCurrentlyTrusted: { true }),
-                eventHandlerClient: .init(
+            reducer: AppFeature(),
+            prepareDependencies: {
+                $0.accessibilityClient = .init(isCurrentlyTrusted: { true })
+                $0.eventHandlerClient = .init(
                     isEnabled: { eventHandlerIsRunning },
                     startProvisional: { true },
                     startActive: {
@@ -85,9 +83,9 @@ final class UserInterfaceTests: XCTestCase {
                     stop: {
                         eventHandlerIsRunning.value = false
                     }
-                ),
-                mainQueue: mainQueue.eraseToAnyScheduler()
-            )
+                )
+                $0.mainQueue = mainQueue.eraseToAnyScheduler()
+            }
         )
 
         store.send(.checkForPermissions)

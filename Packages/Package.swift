@@ -29,7 +29,7 @@ let package = Package(
         .singleTargetLibrary("HumanReadable"),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.28.1"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.47.2"),
     ],
     targets: [
         .target(
@@ -66,6 +66,7 @@ let package = Package(
         .target(
             name: "EventHandlerClient",
             dependencies: [
+                .composableArchitecture,
             ]
         ),
         .target(

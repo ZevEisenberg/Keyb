@@ -3,7 +3,7 @@ import SwiftUI
 
 struct OnboardingView: View {
 
-    let store: Store<UserInterfaceState, UserInterfaceAction>
+    let store: StoreOf<UserInterface>
 
     var body: some View {
         WithViewStore(store) { viewStore in
@@ -31,12 +31,10 @@ struct OnboardingView_Previews: PreviewProvider {
         OnboardingView(
             store: .init(
                 initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-                reducer: appReducer,
-                environment: .init(
-                    accessibilityClient: .accessibilityIsNotGranted,
-                    eventHandlerClient: .noop(enabled: false),
-                    mainQueue: .immediate
-                )
+                reducer: AppFeature()
+                    .dependency(\.accessibilityClient, .accessibilityIsNotGranted)
+                    .dependency(\.eventHandlerClient, .noop(enabled: false))
+                    .dependency(\.mainQueue, .immediate)
             )
         )
         .frame(width: 400)

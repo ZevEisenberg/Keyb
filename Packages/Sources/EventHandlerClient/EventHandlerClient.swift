@@ -1,4 +1,6 @@
 import Combine
+import Dependencies
+import XCTestDynamicOverlay
 
 public struct EventHandlerClient {
 
@@ -40,4 +42,24 @@ public extension EventHandlerClient {
         )
     }
 
+    static var unimplemented: Self {
+        EventHandlerClient(
+            isEnabled: XCTUnimplemented("\(Self.self).isEnabled", placeholder: CurrentValueSubject<Bool, Never>(false)),
+            startProvisional: XCTUnimplemented("\(Self.self).startProvisional"),
+            startActive: XCTUnimplemented("\(Self.self).startActive", placeholder: false),
+            stop: XCTUnimplemented("\(Self.self).startActive", placeholder: ())
+        )
+    }
+
+}
+
+extension EventHandlerClient: TestDependencyKey {
+    public static let testValue = EventHandlerClient.unimplemented
+}
+
+public extension DependencyValues {
+    var eventHandlerClient: EventHandlerClient {
+        get { self[EventHandlerClient.self] }
+        set { self[EventHandlerClient.self] = newValue }
+    }
 }

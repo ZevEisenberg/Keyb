@@ -1,5 +1,6 @@
 import ApplicationServices.HIServices
 import AccessibilityClient
+import Dependencies
 import Foundation
 
 public extension AccessibilityClient {
@@ -12,4 +13,8 @@ public extension AccessibilityClient {
             }
         )
     }
+}
+
+extension AccessibilityClient: DependencyKey {
+    public static let liveValue = AccessibilityClient.live
 }
