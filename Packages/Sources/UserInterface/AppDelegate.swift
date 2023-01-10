@@ -1,22 +1,25 @@
 import ComposableArchitecture
 
-public struct AppDelegateState: Equatable {
-    public var isDockMenuItemChecked: Bool
-    public var hasPermission: Bool
-}
+public struct AppDelegateFeature: ReducerProtocol {
 
-let appDelegateReducer = Reducer<AppDelegateState, UserInterfaceAction, Void> { state, action, _ in
-    switch action {
-    case .changeObservingState(observing: let observing):
-        state.isDockMenuItemChecked = observing
-        return .none
-    default:
-        return .none
+    public struct State: Equatable {
+        public var isDockMenuItemChecked: Bool
+        public var hasPermission: Bool
+    }
+
+    public func reduce(into state: inout State, action: UserInterface.Action) -> EffectTask<UserInterface.Action> {
+        switch action {
+        case .changeObservingState(observing: let observing):
+            state.isDockMenuItemChecked = observing
+            return .none
+        default:
+            return .none
+        }
     }
 }
 
-extension UserInterfaceState {
-    public var appDelegate: AppDelegateState {
+extension UserInterface.State {
+    public var appDelegate: AppDelegateFeature.State {
         get {
             .init(
                 isDockMenuItemChecked: isRunning,

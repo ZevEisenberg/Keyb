@@ -1,5 +1,6 @@
 import EventHandler
 import EventHandlerClient
+import Dependencies
 
 public extension EventHandlerClient {
 
@@ -14,4 +15,8 @@ public extension EventHandlerClient {
         )
     }
 
+}
+
+extension EventHandlerClient: DependencyKey {
+    public static let liveValue = EventHandlerClient.live(with: EventHandler())
 }

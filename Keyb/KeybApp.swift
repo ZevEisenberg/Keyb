@@ -31,22 +31,15 @@ struct KeybApp: App {
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
-    let eventHandler = EventHandler()
-
     override init() {
         store = Store(
-            initialState: UserInterfaceState(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-            reducer: appReducer,
-            environment: .init(
-                accessibilityClient: .live,
-                eventHandlerClient: .live(with: eventHandler),
-                mainQueue: .main
-            )
+            initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
+            reducer: AppFeature()
         )
         super.init()
     }
 
-    let store: Store<UserInterfaceState, UserInterfaceAction>
+    let store: StoreOf<UserInterface>
 
     lazy var viewStore = ViewStore(store.scope(state: \.appDelegate))
 

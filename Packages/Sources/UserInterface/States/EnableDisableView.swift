@@ -3,7 +3,7 @@ import SwiftUI
 
 struct EnableDisableView: View {
 
-    let store: Store<UserInterfaceState, UserInterfaceAction>
+    let store: StoreOf<UserInterface>
 
     var body: some View {
         WithViewStore(store) { viewStore in
@@ -13,7 +13,7 @@ struct EnableDisableView: View {
                         get: { userInterfaceState in
                             userInterfaceState.mode == .hasAccessibilityPermission(isRunning: true)
                         },
-                        send: UserInterfaceAction.changeObservingState(observing:))
+                        send: UserInterface.Action.changeObservingState(observing:))
                 ) {
                     Text("Enable one-handed typing")
                 }
@@ -29,12 +29,10 @@ struct EnableDisableView_Previews: PreviewProvider {
         EnableDisableView(
             store: .init(
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: appReducer,
-                environment: .init(
-                    accessibilityClient: .accessibilityIsNotGranted,
-                    eventHandlerClient: .noop(enabled: false),
-                    mainQueue: .immediate
-                )
+                reducer: AppFeature()
+                    .dependency(\.accessibilityClient, .accessibilityIsNotGranted)
+                    .dependency(\.eventHandlerClient, .noop(enabled: false))
+                    .dependency(\.mainQueue, .immediate)
             )
         )
         .frame(width: 400)
