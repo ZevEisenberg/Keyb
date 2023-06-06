@@ -41,7 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     let store: StoreOf<UserInterface>
 
-    lazy var viewStore = ViewStore(store.scope(state: \.appDelegate))
+    lazy var viewStore = ViewStore(store, observe: \.appDelegate)
 
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
         guard viewStore.hasPermission
