@@ -5,9 +5,10 @@ import EventHandlerClient
 import UserInterface
 import XCTest
 
+@MainActor
 final class UserInterfaceTests: XCTestCase {
 
-    func testHappyPath() {
+    func testHappyPath() async {
         let mainQueue = DispatchQueue.test
 
         var currentlyTrusted = false
@@ -36,34 +37,34 @@ final class UserInterfaceTests: XCTestCase {
             }
         )
 
-        store.send(.checkForPermissions)
-        store.receive(.permissionChanged(hasAccessibilityPermission: false))
+        await store.send(.checkForPermissions)
+        await store.receive(.permissionChanged(hasAccessibilityPermission: false))
 
-        mainQueue.advance(by: 5)
+        await mainQueue.advance(by: 5)
 
         XCTAssertFalse(currentlyTrusted)
 
         // User grants permission. Doesn't really affect the test. Mostly here as documentation.
         currentlyTrusted = true
 
-        store.send(.permissionChanged(hasAccessibilityPermission: true)) {
+        await store.send(.permissionChanged(hasAccessibilityPermission: true)) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
-        store.send(.changeObservingState(observing: true)) {
+        await store.send(.changeObservingState(observing: true)) {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
 
         XCTAssertTrue(eventHandlerIsRunning.value)
 
-        store.send(.changeObservingState(observing: false)) {
+        await store.send(.changeObservingState(observing: false)) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
         XCTAssertFalse(eventHandlerIsRunning.value)
     }
 
-    func testAlreadyHasPermission() {
+    func testAlreadyHasPermission() async {
         let mainQueue = DispatchQueue.test
 
         let eventHandlerIsRunning: CurrentValueSubject<Bool, Never> = .init(false)
@@ -88,18 +89,18 @@ final class UserInterfaceTests: XCTestCase {
             }
         )
 
-        store.send(.checkForPermissions)
-        store.receive(.permissionChanged(hasAccessibilityPermission: true))
+        await store.send(.checkForPermissions)
+        await store.receive(.permissionChanged(hasAccessibilityPermission: true))
 
-        mainQueue.advance(by: 5)
+        await mainQueue.advance(by: 5)
 
-        store.send(.changeObservingState(observing: true)) {
+        await store.send(.changeObservingState(observing: true)) {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
 
         XCTAssertTrue(eventHandlerIsRunning.value)
 
-        store.send(.changeObservingState(observing: false)) {
+        await store.send(.changeObservingState(observing: false)) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
