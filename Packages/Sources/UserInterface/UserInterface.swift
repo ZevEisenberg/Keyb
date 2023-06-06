@@ -85,12 +85,12 @@ public struct UserInterface: ReducerProtocol {
             let provisionalStartResult = eventHandlerClient.startProvisional()
             return .concatenate(
                 .init(value: .permissionChanged(hasAccessibilityPermission: provisionalStartResult)),
-                Effect.timer(id: TimerID(), every: 0.5, on: mainQueue)
+                EffectPublisher.timer(id: TimerID(), every: 0.5, on: mainQueue)
                     .map { _ in .checkForPermissions }
             )
 
         case .permissionChanged(let hasAccessibilityPermission):
-            var effects: [Effect<UserInterface.Action, Never>] = [.none]
+            var effects: [EffectTask<UserInterface.Action>] = [.none]
             if hasAccessibilityPermission {
                 // cancel if permissions changed
                 if case .noAccessibilityPermission = state.mode {
