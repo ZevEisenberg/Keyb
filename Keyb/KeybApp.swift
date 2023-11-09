@@ -34,7 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     override init() {
         store = Store(
             initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-            reducer: AppFeature()
+            reducer: AppFeature.init
         )
         super.init()
     }

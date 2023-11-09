@@ -29,11 +29,12 @@ struct EnableDisableView_Previews: PreviewProvider {
         EnableDisableView(
             store: .init(
                 initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: AppFeature()
-                    .dependency(\.accessibilityClient, .accessibilityIsNotGranted)
-                    .dependency(\.eventHandlerClient, .noop(enabled: false))
-                    .dependency(\.mainQueue, .immediate)
-            )
+                reducer: AppFeature.init
+            ) {
+                $0.accessibilityClient = .accessibilityIsNotGranted
+                $0.eventHandlerClient = .noop(enabled: false)
+                $0.mainQueue = .immediate
+            }
         )
         .frame(width: 400)
     }
