@@ -16,26 +16,25 @@ final class UserInterfaceTests: XCTestCase {
 
         let store = TestStore(
             initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-            reducer: AppFeature(),
-            prepareDependencies: {
-                $0.accessibilityClient = .init(isCurrentlyTrusted: { currentlyTrusted })
-                $0.eventHandlerClient = .init(
-                    isEnabled: { eventHandlerIsRunning },
-                    startProvisional: {
-                        currentlyTrusted = true
-                        return true
-                    },
-                    startActive: {
-                        eventHandlerIsRunning.value = true
-                        return true
-                    },
-                    stop: {
-                        eventHandlerIsRunning.value = false
-                    }
-                )
-                $0.mainQueue = mainQueue.eraseToAnyScheduler()
-            }
-        )
+            reducer: AppFeature.init
+        ) {
+            $0.accessibilityClient = .init(isCurrentlyTrusted: { currentlyTrusted })
+            $0.eventHandlerClient = .init(
+                isEnabled: { eventHandlerIsRunning },
+                startProvisional: {
+                    currentlyTrusted = true
+                    return true
+                },
+                startActive: {
+                    eventHandlerIsRunning.value = true
+                    return true
+                },
+                stop: {
+                    eventHandlerIsRunning.value = false
+                }
+            )
+            $0.mainQueue = mainQueue.eraseToAnyScheduler()
+        }
 
         await store.send(.checkForPermissions)
         await store.receive(.permissionChanged(hasAccessibilityPermission: false))
@@ -71,23 +70,22 @@ final class UserInterfaceTests: XCTestCase {
 
         let store = TestStore(
             initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-            reducer: AppFeature(),
-            prepareDependencies: {
-                $0.accessibilityClient = .init(isCurrentlyTrusted: { true })
-                $0.eventHandlerClient = .init(
-                    isEnabled: { eventHandlerIsRunning },
-                    startProvisional: { true },
-                    startActive: {
-                        eventHandlerIsRunning.value = true
-                        return true
-                    },
-                    stop: {
-                        eventHandlerIsRunning.value = false
-                    }
-                )
-                $0.mainQueue = mainQueue.eraseToAnyScheduler()
-            }
-        )
+            reducer: AppFeature.init
+        ) {
+            $0.accessibilityClient = .init(isCurrentlyTrusted: { true })
+            $0.eventHandlerClient = .init(
+                isEnabled: { eventHandlerIsRunning },
+                startProvisional: { true },
+                startActive: {
+                    eventHandlerIsRunning.value = true
+                    return true
+                },
+                stop: {
+                    eventHandlerIsRunning.value = false
+                }
+            )
+            $0.mainQueue = mainQueue.eraseToAnyScheduler()
+        }
 
         await store.send(.checkForPermissions)
         await store.receive(.permissionChanged(hasAccessibilityPermission: true))
