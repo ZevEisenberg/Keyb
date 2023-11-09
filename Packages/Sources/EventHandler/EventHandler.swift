@@ -6,7 +6,7 @@ import HumanReadable
 import KeyProcessor
 import os.log
 
-private let keypressLog = OSLog(subsystem: "events", category: "keypresses")
+private let keypressLog = Logger(subsystem: "events", category: "keypresses")
 
 public final class EventHandler {
 
@@ -48,13 +48,8 @@ public final class EventHandler {
             let unsafeProcessor = Unmanaged<KeyProcessor>.fromOpaque(userInfo).takeUnretainedValue()
 
             #if DEBUG
-            if #available(macOS 10.14, *) {
-                // Log the key press in a privacy-preserving way for debugging purposes
-                os_log(.debug, log: keypressLog, "0x%{private}.2X %@ flags: %@", UInt64(event.getIntegerValueField(.keyboardEventKeycode)), type.humanReadable, event.flags.humanReadable)
-
-                // For when we can target macOS 11:
-                // keypressLog.debug("0x\(UInt64(event.getIntegerValueField(.keyboardEventKeycode)), format: .hex, privacy: .private) \(type.humanReadable) flags: \(event.flags.humanReadable)")
-            }
+            // Log the key press in a privacy-preserving way for debugging purposes
+            keypressLog.debug("0x\(UInt64(event.getIntegerValueField(.keyboardEventKeycode)), format: .hex, privacy: .private) \(type.humanReadable) flags: \(event.flags.humanReadable)")
             #endif
 
             let events = unsafeProcessor.process(event: event, type: type)
