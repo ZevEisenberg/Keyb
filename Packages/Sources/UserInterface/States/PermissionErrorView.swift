@@ -25,11 +25,31 @@ struct PermissionErrorView: View {
             Text("Keyb needs your permission to watch your keystrokes in order to work.")
             Spacer()
                 .frame(height: 10)
-            Text("1. Open \(boldText("System Preferences")) → \(boldText("Security & Privacy")):")
-            OpenPreferencesButton()
-            Text("2. Click on \(boldText("Accessibility")).")
-            Text("3. Click the 🔒 at the bottom to unlock it.")
-            Text("4. Check the box next to Keyb.")
+            var counter = 1
+            let incrementCounter = {
+                counter += 1
+            }
+
+            let settingsAppName = UserConfigurationName.current.settingsAppName
+            let paneName = UserConfigurationName.current.privacyAndSecurityPaneName
+            Text("\(counter). Open \(boldText(settingsAppName)) → \(boldText(paneName)):")
+            let _ = incrementCounter()
+            OpenPrivacyAndSecuritySettingsButton()
+            Text("\(counter). Click on \(boldText("Accessibility")) if it is not already selected.")
+            let _ = incrementCounter()
+
+            if UserConfigurationName.current == .preferences {
+                // older versions of macOS have a lock icon, but newer ones do not
+                Text("\(counter). Click the 🔒 at the bottom to unlock it.")
+                let _ = incrementCounter()
+            }
+
+            switch UserConfigurationName.current {
+            case .preferences:
+                Text("\(counter). Check the box next to Keyb.")
+            case .settings:
+                Text("\(counter). Enable the switch next to Keyb.")
+            }
         }
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -37,8 +57,8 @@ struct PermissionErrorView: View {
 }
 
 private extension PermissionErrorView {
-    func boldText(_ key: LocalizedStringKey, tableName: String? = nil, bundle: Bundle? = nil, comment: StaticString? = nil) -> Text {
-        Text(key, tableName: tableName, bundle: bundle, comment: comment).fontWeight(.bold)
+    func boldText(_ text: String) -> Text {
+        Text(text).fontWeight(.bold)
     }
 }
 
