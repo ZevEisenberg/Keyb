@@ -68,11 +68,11 @@ public struct UserInterface: ReducerProtocol {
 
         switch action {
         case .didAppear:
-            return .init(value: .checkForPermissions)
+            return .send(.checkForPermissions)
 
         case .checkForPermissions:
             let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
-            return .init(value: .permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
+            return .send(.permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
 
         case .promptForPermission:
             let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
@@ -83,11 +83,14 @@ public struct UserInterface: ReducerProtocol {
 
             state.mode = .noAccessibilityPermission(.awaitingUser)
             let provisionalStartResult = eventHandlerClient.startProvisional()
-            return .concatenate(
-                .init(value: .permissionChanged(hasAccessibilityPermission: provisionalStartResult)),
-                EffectPublisher.timer(id: TimerID(), every: 0.5, on: mainQueue)
-                    .map { _ in .checkForPermissions }
-            )
+            return .run { send in
+                await send(.permissionChanged(hasAccessibilityPermission: provisionalStartResult))
+
+                for await _ in mainQueue.timer(interval: 0.5) {
+                    await send(.checkForPermissions)
+                }
+            }
+            .cancellable(id: TimerID())
 
         case .permissionChanged(let hasAccessibilityPermission):
             var effects: [EffectTask<UserInterface.Action>] = [.none]
@@ -114,7 +117,7 @@ public struct UserInterface: ReducerProtocol {
             if startSuccess {
                 return .none
             } else {
-                return .init(value: .permissionsError)
+                return .send(.permissionsError)
             }
 
         case .changeObservingState(observing: false):
@@ -156,9 +159,9 @@ public struct UserInterfaceView: View {
     }
 
     public var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(store, observe: \.mode) { viewStore in
             Group {
-                switch viewStore.mode {
+                switch viewStore.state {
                 case .hasAccessibilityPermission:
                     EnableDisableView(store: store)
                 case .noAccessibilityPermission(let reason):

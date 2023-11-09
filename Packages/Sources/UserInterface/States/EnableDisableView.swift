@@ -6,12 +6,12 @@ struct EnableDisableView: View {
     let store: StoreOf<UserInterface>
 
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(store, observe: \.mode) { viewStore in
             VStack(alignment: .leading) {
                 Toggle(
                     isOn: viewStore.binding(
-                        get: { userInterfaceState in
-                            userInterfaceState.mode == .hasAccessibilityPermission(isRunning: true)
+                        get: { mode in
+                            mode == .hasAccessibilityPermission(isRunning: true)
                         },
                         send: UserInterface.Action.changeObservingState(observing:))
                 ) {
