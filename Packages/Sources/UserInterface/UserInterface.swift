@@ -3,7 +3,7 @@ import EventHandlerClient
 import ComposableArchitecture
 import SwiftUI
 
-public struct UserInterface: ReducerProtocol {
+public struct UserInterface: Reducer {
     public struct State: Equatable {
         public enum Mode: Equatable {
             public enum NoAccessibilityPermissionReason: Equatable {
@@ -63,7 +63,7 @@ public struct UserInterface: ReducerProtocol {
     @Dependency(\.eventHandlerClient) var eventHandlerClient
     @Dependency(\.mainQueue) var mainQueue
 
-    public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+    public func reduce(into state: inout State, action: Action) -> Effect<Action> {
         struct TimerID: Hashable {}
 
         switch action {
@@ -93,7 +93,7 @@ public struct UserInterface: ReducerProtocol {
             .cancellable(id: TimerID())
 
         case .permissionChanged(let hasAccessibilityPermission):
-            var effects: [EffectTask<UserInterface.Action>] = [.none]
+            var effects: [Effect<UserInterface.Action>] = [.none]
             if hasAccessibilityPermission {
                 // cancel if permissions changed
                 if case .noAccessibilityPermission = state.mode {
@@ -133,13 +133,13 @@ public struct UserInterface: ReducerProtocol {
     }
 }
 
-public struct AppFeature: ReducerProtocol {
+public struct AppFeature: Reducer {
     public typealias State = UserInterface.State
     public typealias Action = UserInterface.Action
 
     public init() {}
 
-    public var body: some ReducerProtocol<UserInterface.State, UserInterface.Action> {
+    public var body: some Reducer<UserInterface.State, UserInterface.Action> {
         UserInterface()
         Scope(state: \.appDelegate, action: /.self) {
             AppDelegateFeature()

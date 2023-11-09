@@ -1,13 +1,13 @@
 import ComposableArchitecture
 
-public struct AppDelegateFeature: ReducerProtocol {
+public struct AppDelegateFeature: Reducer {
 
     public struct State: Equatable {
         public var isDockMenuItemChecked: Bool
         public var hasPermission: Bool
     }
 
-    public func reduce(into state: inout State, action: UserInterface.Action) -> EffectTask<UserInterface.Action> {
+    public func reduce(into state: inout State, action: UserInterface.Action) -> Effect<UserInterface.Action> {
         switch action {
         case .changeObservingState(observing: let observing):
             state.isDockMenuItemChecked = observing
