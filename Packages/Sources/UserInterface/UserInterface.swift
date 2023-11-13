@@ -3,7 +3,8 @@ import EventHandlerClient
 import ComposableArchitecture
 import SwiftUI
 
-public struct UserInterface: Reducer {
+@Reducer
+public struct UserInterface {
     public struct State: Equatable {
         public enum Mode: Equatable {
             public enum NoAccessibilityPermissionReason: Equatable {
@@ -133,7 +134,8 @@ public struct UserInterface: Reducer {
     }
 }
 
-public struct AppFeature: Reducer {
+@Reducer
+public struct AppFeature {
     public typealias State = UserInterface.State
     public typealias Action = UserInterface.Action
 
@@ -141,10 +143,10 @@ public struct AppFeature: Reducer {
 
     public var body: some Reducer<UserInterface.State, UserInterface.Action> {
         UserInterface()
-        Scope(state: \.appDelegate, action: /.self) {
+        Scope(state: \.appDelegate, action: \.self) {
             AppDelegateFeature()
         }
-        Scope(state: \UserInterface.State.appDelegate, action: /.self) {
+        Scope(state: \UserInterface.State.appDelegate, action: \.self) {
             AppDelegateFeature()
         }
     }

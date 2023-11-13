@@ -1,6 +1,7 @@
 import ComposableArchitecture
 
-public struct AppDelegateFeature: Reducer {
+@Reducer
+public struct AppDelegateFeature {
 
     public struct State: Equatable {
         public var isDockMenuItemChecked: Bool
