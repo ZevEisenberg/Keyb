@@ -30,6 +30,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.4.2"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.1.0"),
     ],
     targets: [
         .target(
@@ -67,6 +68,7 @@ let package = Package(
             name: "EventHandlerClient",
             dependencies: [
                 .composableArchitecture,
+                .product(name: "DependenciesMacros", package: "swift-dependencies"),
             ]
         ),
         .target(
@@ -80,6 +82,7 @@ let package = Package(
             name: "AccessibilityClient",
             dependencies: [
                 .composableArchitecture,
+                .product(name: "DependenciesMacros", package: "swift-dependencies"),
             ]
         ),
         .target(

@@ -1,21 +1,15 @@
 import Dependencies
+import DependenciesMacros
 import XCTestDynamicOverlay
 
+@DependencyClient
 public struct AccessibilityClient {
 
-    public var isCurrentlyTrusted: () -> Bool
-
-    public init(isCurrentlyTrusted: @escaping () -> Bool) {
-        self.isCurrentlyTrusted = isCurrentlyTrusted
-    }
+    public var isCurrentlyTrusted: () -> Bool = { false }
 
 }
 
 public extension AccessibilityClient {
-
-    static let testValue: Self = .init(
-        isCurrentlyTrusted: unimplemented("\(Self.self).isCurrentlyTrusted")
-    )
 
     static var accessibilityIsEnabled: Self {
         .init(
@@ -34,7 +28,9 @@ public extension AccessibilityClient {
     }
 }
 
-extension AccessibilityClient: TestDependencyKey {}
+extension AccessibilityClient: TestDependencyKey {
+    public static let testValue = AccessibilityClient()
+}
 
 public extension DependencyValues {
     var accessibilityClient: AccessibilityClient {

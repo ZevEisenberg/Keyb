@@ -1,34 +1,24 @@
 import Combine
 import Dependencies
+import DependenciesMacros
 import XCTestDynamicOverlay
 
+@DependencyClient
 public struct EventHandlerClient {
 
-    public var isEnabled: () -> CurrentValueSubject<Bool, Never>
+    public var isEnabled: () -> any Publisher<Bool, Never> = { Empty() }
 
     /// Attempt to start the event handler provisionally in order to force a system accessibility prompt.
     ///
     /// **Returns:** `true` if successfully started. Otherwise, `false`, probably due to a permissions error.
-    public var startProvisional: () -> Bool
+    public var startProvisional: () -> Bool = { false }
 
     /// Attempt to start the event handler
     ///
     /// **Returns:** `true` if successfully started. Otherwise, `false`, probably due to a permissions error.
-    public var startActive: () -> Bool
-    
-    public var stop: () -> Void
+    public var startActive: () -> Bool = { false }
 
-    public init(
-        isEnabled: @escaping () -> CurrentValueSubject<Bool, Never>,
-        startProvisional: @escaping () -> Bool,
-        startActive: @escaping () -> Bool,
-        stop: @escaping () -> Void
-    ) {
-        self.isEnabled = isEnabled
-        self.startProvisional = startProvisional
-        self.startActive = startActive
-        self.stop = stop
-    }
+    public var stop: () -> Void
 }
 
 public extension EventHandlerClient {
@@ -42,18 +32,13 @@ public extension EventHandlerClient {
         )
     }
 
-    static var testValue: Self {
-        EventHandlerClient(
-            isEnabled: unimplemented("\(Self.self).isEnabled", placeholder: CurrentValueSubject<Bool, Never>(false)),
-            startProvisional: unimplemented("\(Self.self).startProvisional"),
-            startActive: unimplemented("\(Self.self).startActive", placeholder: false),
-            stop: unimplemented("\(Self.self).startActive", placeholder: ())
-        )
-    }
-
 }
 
-extension EventHandlerClient: TestDependencyKey {}
+extension EventHandlerClient: TestDependencyKey {
+    public static var testValue: Self {
+        EventHandlerClient()
+    }
+}
 
 public extension DependencyValues {
     var eventHandlerClient: EventHandlerClient {

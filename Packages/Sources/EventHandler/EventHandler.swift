@@ -22,10 +22,13 @@ public final class EventHandler {
     // Public Properties
 
     /// Whether we are currently intercepting and modifying keystrokes.
-    private(set) public var isEnabled: CurrentValueSubject<Bool, Never> = .init(false)
+    public var isEnabled: any Publisher<Bool, Never> {
+        isEnabledGuts
+    }
 
     // Private Properties
 
+    private var isEnabledGuts: CurrentValueSubject<Bool, Never> = .init(false)
     private var eventTap: CFMachPort?
     private let keyProcessor = KeyProcessor()
 
@@ -36,7 +39,7 @@ public final class EventHandler {
     /// Attempt to start the event handler
     /// - Returns: `true` if successfully started. Otherwise, `false`, probably due to a permissions error.
     public func start(mode: Mode) -> Bool {
-        guard !isEnabled.value else { return true }
+        guard !isEnabledGuts.value else { return true }
 
         // Intercept keyDown, keyUp, and flagsChanged events
         let mask: CGEventMask = 1 << CGEventType.keyDown.rawValue | 1 << CGEventType.keyUp.rawValue | 1 << CGEventType.flagsChanged.rawValue
@@ -79,7 +82,7 @@ public final class EventHandler {
         let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
-        isEnabled.value = true
+        isEnabledGuts.value = true
 
         if mode == .provisional {
             stop()
@@ -88,11 +91,11 @@ public final class EventHandler {
     }
 
     public func stop() {
-        guard eventTap != nil, isEnabled.value else { return }
+        guard eventTap != nil, isEnabledGuts.value else { return }
         // TODO: do this in Obj-C to catch thrown errors
         CFMachPortInvalidate(eventTap);
         eventTap = nil
-        isEnabled.value = false
+        isEnabledGuts.value = false
     }
 
 }
