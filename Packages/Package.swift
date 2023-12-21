@@ -29,8 +29,8 @@ let package = Package(
         .singleTargetLibrary("HumanReadable"),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.4.2"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.1.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.5.6"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.1.5"),
     ],
     targets: [
         .target(
