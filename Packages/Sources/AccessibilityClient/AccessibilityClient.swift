@@ -1,6 +1,5 @@
 import Dependencies
 import DependenciesMacros
-import XCTestDynamicOverlay
 
 @DependencyClient
 public struct AccessibilityClient: Sendable {

@@ -1,7 +1,6 @@
 import Combine
 import Dependencies
 import DependenciesMacros
-import XCTestDynamicOverlay
 
 @DependencyClient
 public struct EventHandlerClient: Sendable {
