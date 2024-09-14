@@ -19,6 +19,9 @@ platform :mac do
   desc "Signs a build with Developer ID for distribution on GitHub."
   lane :release do |options|
     the_tag = options[:tag] || UI.user_error!("No tag provided. Pass a tag like tag:1.2.3")
+
+    github_token = ENV['GITHUB_TOKEN'] || UI.user_error!("GITHUB_TOKEN not provided. Provide it with this before your fastlane invocation: 'GITHUB_TOKEN=`gh auth token`")
+
     build_mac_app(
       scheme: "Keyb",
       clean: true,
