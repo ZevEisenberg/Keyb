@@ -1,29 +1,35 @@
 import Carbon.HIToolbox
 import HumanReadable
-import XCTest
+import Testing
+
 @testable import KeyProcessor
 
-final class KeyProcessorTests: XCTestCase {
+@Suite
+struct KeyProcessorTests {
 
-    func testLefRegularKeyDown() throws {
+    @Test
+    func lefRegularKeyDown() throws {
         let sut = KeyProcessor()
         try sut.assert(keyCode: kVK_ANSI_A, type: .keyDown, expected: [(kVK_ANSI_A, .keyDown)])
         try sut.assert(keyCode: kVK_ANSI_A, type: .keyUp, expected: [(kVK_ANSI_A, .keyUp)])
     }
 
-    func testRightRegularKeyDown() throws {
+    @Test
+    func rightRegularKeyDown() throws {
         let sut = KeyProcessor()
         try sut.assert(keyCode: kVK_ANSI_O, type: .keyDown, expected: [(kVK_ANSI_O, .keyDown)])
         try sut.assert(keyCode: kVK_ANSI_O, type: .keyUp, expected: [(kVK_ANSI_O, .keyUp)])
     }
 
-    func testSpacebar() throws {
+    @Test
+    func spacebar() throws {
         let sut = KeyProcessor()
         try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyDown), (kVK_Space, .keyUp)])
     }
 
-    func testLeftFlippedKeyDown() throws {
+    @Test
+    func leftFlippedKeyDown() throws {
         let sut = KeyProcessor()
         try sut.assert(keyCode: kVK_Space, type: .keyDown, expected: [])
         try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_L, .keyDown)])
@@ -31,7 +37,8 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
     }
 
-    func testSpaceWorksAfterCommandSpace() throws {
+    @Test
+    func spaceWorksAfterCommandSpace() throws {
         let sut = KeyProcessor()
 
         // command-space shortcut
@@ -45,7 +52,8 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyDown), (kVK_Space, .keyUp)])
     }
 
-    func testTypingSpaceWhileLetterIsPressedDown() throws {
+    @Test
+    func typingSpaceWhileLetterIsPressedDown() throws {
         let sut = KeyProcessor()
 
         // Sometimes, when typing fast, we type a space while the last letter is still held down.
@@ -57,7 +65,8 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_ANSI_S, type: .keyUp, expected: [(kVK_ANSI_S, .keyUp)])
     }
 
-    func testTypingSpaceInterleavedWithLetter() throws {
+    @Test
+    func typingSpaceInterleavedWithLetter() throws {
         let sut = KeyProcessor()
 
         // Sometimes, when typing fast, we type a space while the last letter is still held down, and release them
@@ -69,7 +78,8 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [(kVK_Space, .keyUp)])
     }
 
-    func testRegularKeyThenFlippedKeyTwice() throws {
+    @Test
+    func regularKeyThenFlippedKeyTwice() throws {
         let sut = KeyProcessor()
 
         try sut.assert(keyCode: kVK_ANSI_S, type: .keyDown, expected: [(kVK_ANSI_S, .keyDown)])
@@ -84,7 +94,8 @@ final class KeyProcessorTests: XCTestCase {
         try sut.assert(keyCode: kVK_Space, type: .keyUp, expected: [])
     }
 
-    func testDelete() throws {
+    @Test
+    func delete() throws {
         let sut = KeyProcessor()
 
         // Type an S
@@ -129,25 +140,31 @@ private enum EventType {
 }
 
 private extension KeyProcessor {
-    func assert(keyCode: Int, type: EventType, expected: [(keyCode: Int, type: CGEventType)], file: StaticString = #filePath, line: UInt = #line) throws {
-        let inputEvent = try XCTUnwrap(
+    func assert(
+        keyCode: Int,
+        type: EventType,
+        expected: [(keyCode: Int, type: CGEventType)],
+        sourceLocation: Testing.SourceLocation = #_sourceLocation
+    ) throws {
+        let inputEvent = try #require(
             CGEvent(
                 keyboardEventSource: CGEventSource(stateID: .hidSystemState),
                 virtualKey: CGKeyCode(keyCode),
                 keyDown: type.isKeyDown
-            ).map(Unmanaged.passRetained)
+            ).map(Unmanaged.passRetained),
+            sourceLocation: sourceLocation
         )
         let events = process(event: inputEvent.takeUnretainedValue(), type: type.eventType)
-        XCTAssertEqual(
-            events?.all.count ?? 0, expected.count,
+        #expect(
+            events?.all.count ?? 0 == expected.count,
             "expected \(expected.count) event(s), but got \(String(describing: events?.all.count))",
-            file: file, line: line
+            sourceLocation: sourceLocation
         )
 
         for (testEventUnmanaged, controlEvent) in zip(events?.all ?? [], expected) {
             let testEvent = testEventUnmanaged.takeRetainedValue()
-            XCTAssertEqual(testEvent.getIntegerValueField(.keyboardEventKeycode), Int64(controlEvent.keyCode), "keycode not equal", file: file, line: line)
-            XCTAssertEqual(testEvent.type.humanReadable, controlEvent.type.humanReadable, "event type not equal", file: file, line: line)
+            #expect(testEvent.getIntegerValueField(.keyboardEventKeycode) == Int64(controlEvent.keyCode), "keycode not equal", sourceLocation: sourceLocation)
+            #expect(testEvent.type.humanReadable == controlEvent.type.humanReadable, "event type not equal", sourceLocation: sourceLocation)
         }
     }
 }

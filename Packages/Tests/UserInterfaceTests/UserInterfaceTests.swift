@@ -3,13 +3,15 @@ import Combine
 import ComposableArchitecture
 import EventHandlerClient
 import UserInterface
-import XCTest
+import Testing
+import Dispatch
 
 @MainActor
-final class UserInterfaceTests: XCTestCase {
+@Suite
+struct UserInterfaceTests {
 
-    @MainActor
-    func testHappyPath() async {
+    @Test
+    func happyPath() async {
         let mainQueue = DispatchQueue.test
 
         let currentlyTrusted = LockIsolated(false)
@@ -42,7 +44,7 @@ final class UserInterfaceTests: XCTestCase {
 
         await mainQueue.advance(by: 5)
 
-        XCTAssertFalse(currentlyTrusted.value)
+        #expect(!currentlyTrusted.value)
 
         // User grants permission. Doesn't really affect the test. Mostly here as documentation.
         currentlyTrusted.setValue(true)
@@ -57,16 +59,17 @@ final class UserInterfaceTests: XCTestCase {
 
         await store.receive(\.startActiveCalled, true)
 
-        XCTAssertTrue(eventHandlerIsRunning.value)
+        #expect(eventHandlerIsRunning.value)
 
         await store.send(\.changeObservingState, false) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
-        XCTAssertFalse(eventHandlerIsRunning.value)
+        #expect(!eventHandlerIsRunning.value)
     }
 
-    func testAlreadyHasPermission() async {
+    @Test
+    func alreadyHasPermission() async {
         let mainQueue = DispatchQueue.test
 
         let eventHandlerIsRunning: CurrentValueSubject<Bool, Never> = .init(false)
@@ -101,13 +104,13 @@ final class UserInterfaceTests: XCTestCase {
 
         await store.receive(\.startActiveCalled, true)
 
-        XCTAssertTrue(eventHandlerIsRunning.value)
+        #expect(eventHandlerIsRunning.value)
 
         await store.send(\.changeObservingState, false) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
-        XCTAssertFalse(eventHandlerIsRunning.value)
+        #expect(!eventHandlerIsRunning.value)
     }
 
 }
