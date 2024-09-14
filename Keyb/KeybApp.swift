@@ -31,6 +31,7 @@ struct KeybApp: App {
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
+    @MainActor
     override init() {
         store = Store(
             initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
@@ -41,6 +42,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     let store: StoreOf<UserInterface>
 
+    @MainActor
     lazy var viewStore = ViewStore(store, observe: \.appDelegate)
 
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
@@ -60,11 +62,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return menu
     }
 
+    @MainActor
     @objc func enable() {
         viewStore.send(.changeObservingState(observing: true))
 
     }
 
+    @MainActor
     @objc func disable() {
         viewStore.send(.changeObservingState(observing: false))
     }

@@ -3,9 +3,9 @@ import DependenciesMacros
 import XCTestDynamicOverlay
 
 @DependencyClient
-public struct AccessibilityClient {
+public struct AccessibilityClient: Sendable {
 
-    public var isCurrentlyTrusted: () -> Bool = { false }
+    public var isCurrentlyTrusted: @Sendable () -> Bool = { false }
 
 }
 

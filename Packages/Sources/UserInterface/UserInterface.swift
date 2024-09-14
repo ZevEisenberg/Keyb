@@ -54,8 +54,10 @@ public struct UserInterface {
     public enum Action: Equatable {
         case didAppear
         case promptForPermission
+        case promptedForPermission(isCurrentlyTrusted: Bool)
         case permissionChanged(hasAccessibilityPermission: Bool)
         case changeObservingState(observing: Bool)
+        case startActiveCalled(startSuccess: Bool)
         case permissionsError
         case checkForPermissions
     }
@@ -72,19 +74,26 @@ public struct UserInterface {
             return .send(.checkForPermissions)
 
         case .checkForPermissions:
-            let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
-            return .send(.permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
+            return .run { @MainActor [accessibilityClient] send in
+                let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
+                send(.permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
+            }
 
         case .promptForPermission:
-            let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
+            return .run { [accessibilityClient] send in
+                let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
+                await send(.promptedForPermission(isCurrentlyTrusted: isCurrentlyTrusted))
+            }
+
+        case .promptedForPermission(let isCurrentlyTrusted):
             guard !isCurrentlyTrusted else {
                 state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
                 return .none
             }
 
             state.mode = .noAccessibilityPermission(.awaitingUser)
-            let provisionalStartResult = eventHandlerClient.startProvisional()
-            return .run { send in
+            return .run { [eventHandlerClient, mainQueue] send in
+                let provisionalStartResult = await eventHandlerClient.startProvisional()
                 await send(.permissionChanged(hasAccessibilityPermission: provisionalStartResult))
 
                 for await _ in mainQueue.timer(interval: 0.5) {
@@ -112,8 +121,20 @@ public struct UserInterface {
             }
             return .concatenate(effects)
 
-        case .changeObservingState(observing: true):
-            let startSuccess = eventHandlerClient.startActive()
+        case .changeObservingState(let observing):
+            if observing {
+                return .run { @MainActor [eventHandlerClient] send in
+                    let startSuccess = eventHandlerClient.startActive()
+                    send(.startActiveCalled(startSuccess: startSuccess))
+                }
+            } else {
+                state.mode = .hasAccessibilityPermission(isRunning: false)
+                return .run { @MainActor [eventHandlerClient] _ in
+                    eventHandlerClient.stop()
+                }
+            }
+
+        case .startActiveCalled(let startSuccess):
             state.mode = .hasAccessibilityPermission(isRunning: startSuccess)
             if startSuccess {
                 return .none
@@ -121,16 +142,10 @@ public struct UserInterface {
                 return .send(.permissionsError)
             }
 
-        case .changeObservingState(observing: false):
-            state.mode = .hasAccessibilityPermission(isRunning: false)
-            eventHandlerClient.stop()
-            return .none
-
         case .permissionsError:
             state.mode = .noAccessibilityPermission(.permissionError)
             return .none
         }
-
     }
 }
 

@@ -8,6 +8,7 @@ import os.log
 
 private let keypressLog = Logger(subsystem: "events", category: "keypresses")
 
+@MainActor
 public final class EventHandler {
 
     public enum Mode {
@@ -34,7 +35,7 @@ public final class EventHandler {
 
     // Lifecycle
 
-    public init() {}
+    nonisolated public init() {}
 
     /// Attempt to start the event handler
     /// - Returns: `true` if successfully started. Otherwise, `false`, probably due to a permissions error.

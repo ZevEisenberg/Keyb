@@ -8,21 +8,22 @@ import XCTest
 @MainActor
 final class UserInterfaceTests: XCTestCase {
 
+    @MainActor
     func testHappyPath() async {
         let mainQueue = DispatchQueue.test
 
-        var currentlyTrusted = false
+        let currentlyTrusted = LockIsolated(false)
         let eventHandlerIsRunning: CurrentValueSubject<Bool, Never> = .init(false)
 
         let store = TestStore(
             initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
             reducer: AppFeature.init
         ) {
-            $0.accessibilityClient = .init(isCurrentlyTrusted: { currentlyTrusted })
+            $0.accessibilityClient = .init(isCurrentlyTrusted: { currentlyTrusted.value })
             $0.eventHandlerClient = .init(
                 isEnabled: { eventHandlerIsRunning },
                 startProvisional: {
-                    currentlyTrusted = true
+                    currentlyTrusted.setValue(true)
                     return true
                 },
                 startActive: {
@@ -41,10 +42,10 @@ final class UserInterfaceTests: XCTestCase {
 
         await mainQueue.advance(by: 5)
 
-        XCTAssertFalse(currentlyTrusted)
+        XCTAssertFalse(currentlyTrusted.value)
 
         // User grants permission. Doesn't really affect the test. Mostly here as documentation.
-        currentlyTrusted = true
+        currentlyTrusted.setValue(true)
 
         await store.send(.permissionChanged(hasAccessibilityPermission: true)) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
@@ -53,6 +54,8 @@ final class UserInterfaceTests: XCTestCase {
         await store.send(.changeObservingState(observing: true)) {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
+
+        await store.receive(.startActiveCalled(startSuccess: true))
 
         XCTAssertTrue(eventHandlerIsRunning.value)
 
@@ -95,6 +98,8 @@ final class UserInterfaceTests: XCTestCase {
         await store.send(.changeObservingState(observing: true)) {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
+
+        await store.receive(.startActiveCalled(startSuccess: true))
 
         XCTAssertTrue(eventHandlerIsRunning.value)
 

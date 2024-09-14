@@ -4,21 +4,21 @@ import DependenciesMacros
 import XCTestDynamicOverlay
 
 @DependencyClient
-public struct EventHandlerClient {
+public struct EventHandlerClient: Sendable {
 
-    public var isEnabled: () -> any Publisher<Bool, Never> = { Empty() }
+    public var isEnabled: @Sendable @MainActor () -> any Publisher<Bool, Never> = { Empty() }
 
     /// Attempt to start the event handler provisionally in order to force a system accessibility prompt.
     ///
     /// **Returns:** `true` if successfully started. Otherwise, `false`, probably due to a permissions error.
-    public var startProvisional: () -> Bool = { false }
+    public var startProvisional: @Sendable @MainActor () -> Bool = { false }
 
     /// Attempt to start the event handler
     ///
     /// **Returns:** `true` if successfully started. Otherwise, `false`, probably due to a permissions error.
-    public var startActive: () -> Bool = { false }
+    public var startActive: @Sendable @MainActor () -> Bool = { false }
 
-    public var stop: () -> Void
+    public var stop: @Sendable @MainActor () -> Void
 }
 
 public extension EventHandlerClient {
