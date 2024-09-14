@@ -5,6 +5,7 @@ import SwiftUI
 
 @Reducer
 public struct UserInterface {
+    @ObservableState
     public struct State: Equatable {
         public enum Mode: Equatable {
             public enum NoAccessibilityPermissionReason: Equatable {
@@ -176,25 +177,23 @@ public struct UserInterfaceView: View {
     }
 
     public var body: some View {
-        WithViewStore(store, observe: \.mode) { viewStore in
-            Group {
-                switch viewStore.state {
-                case .hasAccessibilityPermission:
-                    EnableDisableView(store: store)
-                case .noAccessibilityPermission(let reason):
-                    switch reason {
-                    case .hasNotPromptedYet:
-                        OnboardingView(store: store)
-                    case .permissionError:
-                        PermissionErrorView(mode: .problem)
-                    case .awaitingUser:
-                        PermissionErrorView(mode: .awaiting)
-                    }
+        WithPerceptionTracking {
+            switch store.mode {
+            case .hasAccessibilityPermission:
+                EnableDisableView(store: store)
+            case .noAccessibilityPermission(let reason):
+                switch reason {
+                case .hasNotPromptedYet:
+                    OnboardingView(store: store)
+                case .permissionError:
+                    PermissionErrorView(mode: .problem)
+                case .awaitingUser:
+                    PermissionErrorView(mode: .awaiting)
                 }
             }
-            .onAppear {
-                viewStore.send(.didAppear)
-            }
+        }
+        .onAppear {
+            store.send(.didAppear)
         }
         .frame(width: 400)
         .padding()

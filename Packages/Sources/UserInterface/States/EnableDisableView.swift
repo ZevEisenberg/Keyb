@@ -3,17 +3,14 @@ import SwiftUI
 
 struct EnableDisableView: View {
 
-    let store: StoreOf<UserInterface>
+    @Perception.Bindable
+    var store: StoreOf<UserInterface>
 
     var body: some View {
-        WithViewStore(store, observe: \.mode) { viewStore in
+        WithPerceptionTracking {
             VStack(alignment: .leading) {
                 Toggle(
-                    isOn: viewStore.binding(
-                        get: { mode in
-                            mode == .hasAccessibilityPermission(isRunning: true)
-                        },
-                        send: UserInterface.Action.changeObservingState(observing:))
+                    isOn: $store.mode.isRunning.sending(\.changeObservingState)
                 ) {
                     Text("Enable one-handed typing")
                 }
@@ -22,7 +19,6 @@ struct EnableDisableView: View {
         }
     }
 }
-
 
 struct EnableDisableView_Previews: PreviewProvider {
     static var previews: some View {

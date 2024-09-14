@@ -2,7 +2,7 @@ import ComposableArchitecture
 
 @Reducer
 public struct AppDelegateFeature {
-
+    @ObservableState
     public struct State: Equatable {
         public var isDockMenuItemChecked: Bool
         public var hasPermission: Bool
