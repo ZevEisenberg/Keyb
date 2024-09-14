@@ -15,6 +15,7 @@ struct EnableDisableView: View {
                     Text("Enable one-handed typing")
                 }
                 Text("Hold the space bar to mirror the keyboard horizontally. This allows you to type with one hand. Every time you would use the other hand, instead hold the spacebar and use the equivalent finger.")
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
