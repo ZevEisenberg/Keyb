@@ -200,50 +200,55 @@ public struct UserInterfaceView: View {
     }
 }
 
-struct UserInterfaceView_Previews: PreviewProvider {
-    static var previews: some View {
-        UserInterfaceView(
-            store: .init(
-                initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: AppFeature.init
-            ) {
-                $0.accessibilityClient = .accessibilityIsEnabled
-                $0.eventHandlerClient = .noop(enabled: false)
-                $0.mainQueue = .immediate
-            }
-        )
+#Preview("Not Running") {
+    UserInterfaceView(
+        store: .init(
+            initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
+            reducer: AppFeature.init
+        ) {
+            $0.accessibilityClient = .accessibilityIsEnabled
+            $0.eventHandlerClient = .noop(enabled: false)
+            $0.mainQueue = .immediate
+        }
+    )
+}
 
-        UserInterfaceView(
-            store: .init(
-                initialState: .init(mode: .hasAccessibilityPermission(isRunning: true)),
-                reducer: AppFeature.init
-            ) {
-                $0.accessibilityClient = .accessibilityIsEnabled
-                $0.eventHandlerClient = .noop(enabled: true)
-                $0.mainQueue = .immediate
-            }
-        )
+#Preview("Running") {
+    UserInterfaceView(
+        store: .init(
+            initialState: .init(mode: .hasAccessibilityPermission(isRunning: true)),
+            reducer: AppFeature.init
+        ) {
+            $0.accessibilityClient = .accessibilityIsEnabled
+            $0.eventHandlerClient = .noop(enabled: true)
+            $0.mainQueue = .immediate
+        }
+    )
+}
 
-        UserInterfaceView(
-            store: .init(
-                initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-                reducer: AppFeature.init
-            ) {
-                $0.accessibilityClient = .accessibilityIsNotGranted
-                $0.eventHandlerClient = .noop(enabled: true)
-                $0.mainQueue = .immediate
-            }
-        )
+#Preview("Not Prompted") {
+    UserInterfaceView(
+        store: .init(
+            initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
+            reducer: AppFeature.init
+        ) {
+            $0.accessibilityClient = .accessibilityIsNotGranted
+            $0.eventHandlerClient = .noop(enabled: true)
+            $0.mainQueue = .immediate
+        }
+    )
 
-        UserInterfaceView(
-            store: .init(
-                initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
-                reducer: AppFeature.init
-            ) {
-                $0.accessibilityClient = .accessibilityIsNotGranted
-                $0.eventHandlerClient = .noop(enabled: true)
-                $0.mainQueue = .immediate
-            }
-        )
-    }
+}
+
+#Preview("Permission Error") {
+    UserInterfaceView(
+        store: .init(
+            initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
+            reducer: AppFeature.init
+        ) {
+            $0.accessibilityClient = .accessibilityIsNotGranted
+            $0.eventHandlerClient = .noop(enabled: true)
+            $0.mainQueue = .immediate
+        }
+    )
 }

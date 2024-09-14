@@ -24,18 +24,16 @@ struct OnboardingView: View {
     }
 }
 
-struct OnboardingView_Previews: PreviewProvider {
-    static var previews: some View {
-        OnboardingView(
-            store: .init(
-                initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-                reducer: AppFeature.init
-            ) {
-                $0.accessibilityClient = .accessibilityIsNotGranted
-                $0.eventHandlerClient = .noop(enabled: false)
-                $0.mainQueue = .immediate
-            }
-        )
-        .frame(width: 400)
-    }
+#Preview {
+    OnboardingView(
+        store: .init(
+            initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
+            reducer: AppFeature.init
+        ) {
+            $0.accessibilityClient = .accessibilityIsNotGranted
+            $0.eventHandlerClient = .noop(enabled: false)
+            $0.mainQueue = .immediate
+        }
+    )
+    .frame(width: 400)
 }

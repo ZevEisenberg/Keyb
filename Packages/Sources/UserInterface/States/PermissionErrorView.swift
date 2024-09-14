@@ -62,13 +62,12 @@ private extension PermissionErrorView {
     }
 }
 
-struct PermissionsErrorView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            PermissionErrorView(mode: .awaiting)
+#Preview("Awaiting") {
+        PermissionErrorView(mode: .awaiting)
+    .frame(width: 400)
+}
 
-            PermissionErrorView(mode: .problem)
-        }
-        .frame(width: 400)
-    }
+#Preview("Problem") {
+        PermissionErrorView(mode: .problem)
+    .frame(width: 400)
 }

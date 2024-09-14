@@ -20,18 +20,16 @@ struct EnableDisableView: View {
     }
 }
 
-struct EnableDisableView_Previews: PreviewProvider {
-    static var previews: some View {
-        EnableDisableView(
-            store: .init(
-                initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-                reducer: AppFeature.init
-            ) {
-                $0.accessibilityClient = .accessibilityIsNotGranted
-                $0.eventHandlerClient = .noop(enabled: false)
-                $0.mainQueue = .immediate
-            }
-        )
-        .frame(width: 400)
-    }
+#Preview {
+    EnableDisableView(
+        store: .init(
+            initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
+            reducer: AppFeature.init
+        ) {
+            $0.accessibilityClient = .accessibilityIsNotGranted
+            $0.eventHandlerClient = .noop(enabled: false)
+            $0.mainQueue = .immediate
+        }
+    )
+    .frame(width: 400)
 }
