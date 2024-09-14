@@ -37,8 +37,8 @@ final class UserInterfaceTests: XCTestCase {
             $0.mainQueue = mainQueue.eraseToAnyScheduler()
         }
 
-        await store.send(.checkForPermissions)
-        await store.receive(.permissionChanged(hasAccessibilityPermission: false))
+        await store.send(\.checkForPermissions)
+        await store.receive(\.permissionChanged, false)
 
         await mainQueue.advance(by: 5)
 
@@ -47,19 +47,19 @@ final class UserInterfaceTests: XCTestCase {
         // User grants permission. Doesn't really affect the test. Mostly here as documentation.
         currentlyTrusted.setValue(true)
 
-        await store.send(.permissionChanged(hasAccessibilityPermission: true)) {
+        await store.send(\.permissionChanged, true) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
-        await store.send(.changeObservingState(observing: true)) {
+        await store.send(\.changeObservingState, true) {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
 
-        await store.receive(.startActiveCalled(startSuccess: true))
+        await store.receive(\.startActiveCalled, true)
 
         XCTAssertTrue(eventHandlerIsRunning.value)
 
-        await store.send(.changeObservingState(observing: false)) {
+        await store.send(\.changeObservingState, false) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 
@@ -90,20 +90,20 @@ final class UserInterfaceTests: XCTestCase {
             $0.mainQueue = mainQueue.eraseToAnyScheduler()
         }
 
-        await store.send(.checkForPermissions)
-        await store.receive(.permissionChanged(hasAccessibilityPermission: true))
+        await store.send(\.checkForPermissions)
+        await store.receive(\.permissionChanged, true)
 
         await mainQueue.advance(by: 5)
 
-        await store.send(.changeObservingState(observing: true)) {
+        await store.send(\.changeObservingState, true) {
             $0.mode = .hasAccessibilityPermission(isRunning: true)
         }
 
-        await store.receive(.startActiveCalled(startSuccess: true))
+        await store.receive(\.startActiveCalled, true)
 
         XCTAssertTrue(eventHandlerIsRunning.value)
 
-        await store.send(.changeObservingState(observing: false)) {
+        await store.send(\.changeObservingState, false) {
             $0.mode = .hasAccessibilityPermission(isRunning: false)
         }
 

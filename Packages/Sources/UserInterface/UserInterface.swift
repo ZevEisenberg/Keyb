@@ -51,7 +51,7 @@ public struct UserInterface {
         }
     }
 
-    public enum Action: Equatable {
+    public enum Action {
         case didAppear
         case promptForPermission
         case promptedForPermission(isCurrentlyTrusted: Bool)
