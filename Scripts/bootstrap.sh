@@ -11,6 +11,9 @@ fi
 # Configure Git to ignore the commits listed in this file when displaying file history. As of this writing, this is used to hide the giant lint/format commit.
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 
+# Do not reflect changes to this file as Git diffs
+git update-index --skip-worktree Keyb/Resources/xcconfig/BuildNumber.xcconfig
+
 # Check if Git-LFS is installed
 if ! command -v git-lfs &> /dev/null
 then
