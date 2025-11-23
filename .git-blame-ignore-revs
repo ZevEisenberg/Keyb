@@ -1,0 +1,5 @@
+# Ignore giant linting/formatting commit so original line history is preserved. Disable this if you need to see that commit to track down a problem.
+# More info: https://michaelheap.com/git-ignore-rev/ and https://akrabat.com/ignoring-revisions-with-git-blame/
+
+# Lint/reformat commit
+8b37c9d305ed95f9ed356542147be3b7f000c041

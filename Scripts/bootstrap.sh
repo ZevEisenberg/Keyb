@@ -8,6 +8,9 @@ if [ -h .git/hooks/pre-commit ]; then
     rm .git/hooks/pre-commit
 fi
 
+# Configure Git to ignore the commits listed in this file when displaying file history. As of this writing, this is used to hide the giant lint/format commit.
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+
 # Check if Git-LFS is installed
 if ! command -v git-lfs &> /dev/null
 then
