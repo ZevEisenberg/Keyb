@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane mac release
 ```
 
-Signs a build with Developer ID for distribution on GitHub.
+Signs a build with Developer ID for distribution on GitHub. Call like: GITHUB_TOKEN=`gh auth token` x bundle exec fastlane release tag:1.2.3
 
 ----
 

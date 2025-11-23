@@ -16,7 +16,7 @@
 default_platform(:mac)
 
 platform :mac do
-  desc "Signs a build with Developer ID for distribution on GitHub."
+  desc "Signs a build with Developer ID for distribution on GitHub. Call like: GITHUB_TOKEN=`gh auth token` x bundle exec fastlane release tag:1.2.3"
   lane :release do |options|
     the_tag = options[:tag] || UI.user_error!("No tag provided. Pass a tag like tag:1.2.3")
 
