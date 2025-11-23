@@ -15,7 +15,7 @@ gem 'fastlane', '2.228.0' # https://github.com/fastlane/fastlane/issues/29766
 gem 'abbrev'
 gem 'benchmark'
 gem 'ostruct'
-
+gem "nkf"
 
 # Used by build number script
 gem 'git'
