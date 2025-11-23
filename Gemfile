@@ -1,11 +1,21 @@
 source 'https://rubygems.org'
 
-gem 'fastlane'
-gem 'down'
+# Current version of Ruby silliness:
+# 1. brew install mise
+# 2. mise settings add idiomatic_version_file_enable_tools ruby
+# 4. brew install libyaml
+# 5. mise install
+# 6. In shell, if not already set, do: alias x="mise x --"
+# 7. x gem install bundler
+# 8. x bundle install
 
-gem 'mutex_m' # required by httpclient (a transitive dependency), but not included as part of the standard library in recent ruby versions
-gem 'abbrev' # required by highline (a transitive dependency), but not included as part of the standard library in recent ruby versions
-gem 'ostruct' # required by a transitive dependency, but not included as part of the standard library in recent ruby versions
+gem 'fastlane'
+
+# required by fastlane
+gem 'abbrev'
+gem 'benchmark'
+gem 'ostruct'
+
 
 # Used by build number script
 gem 'git'
