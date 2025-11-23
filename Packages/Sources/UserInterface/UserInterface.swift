@@ -161,9 +161,6 @@ public struct AppFeature {
     Scope(state: \.appDelegate, action: \.self) {
       AppDelegateFeature()
     }
-    Scope(state: \UserInterface.State.appDelegate, action: \.self) {
-      AppDelegateFeature()
-    }
   }
 }
 
