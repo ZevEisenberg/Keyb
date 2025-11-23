@@ -41,4 +41,4 @@ tccutil reset Accessibility com.zeveisenberg.Keyb
 ```
 
 ## Credits
-Icon uses assets created by Herbert Spencer from the Noun Project.
+Icon uses assets created by Herbert Spencer from the Noun Project. The Keyb icon is [available with read-only access in Figma](https://www.figma.com/design/VE6jA1KzvxKGPFrt3Bju7O/Keyb-Icon?node-id=0-1&p=f&t=8SiSgqwps9WvG9Bl-0).
