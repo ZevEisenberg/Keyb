@@ -180,7 +180,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ $ENABLE_PREVIEWS == \"NO\" ]; then\n  source .env.ruby\n  ruby \"$SRCROOT/Keyb/Scripts/buildnumber.rb\"\nelse\n  echo \"Skipping build number because of preview mode\"\nfi\n";
+			shellScript = "if [ $ENABLE_PREVIEWS == \"NO\" ]; then\n  export PATH=\"$PATH:/opt/homebrew/bin\"\n  mise x -- ruby \"$SRCROOT/Keyb/Scripts/buildnumber.rb\"\nelse\n  echo \"Skipping build number because of preview mode\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
