@@ -3,7 +3,7 @@
 
 #include "./BuildNumber.xcconfig"
 
-KEYB_VERSION_NUMBER = 1.5
+KEYB_VERSION_NUMBER = 1.6
 
 ENABLE_USER_SCRIPT_SANDBOXING = NO
 
