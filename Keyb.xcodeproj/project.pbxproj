@@ -110,6 +110,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD3978BE24AD1FE100BFCB0D /* Build configuration list for PBXNativeTarget "Keyb" */;
 			buildPhases = (
+				7AEDA2792ED2BC4500C80C02 /* Check Dev Environment for Common Errors */,
 				CD4CAA772510F53E0002D69B /* Build Number */,
 				CD3978AA24AD1FE100BFCB0D /* Sources */,
 				CD3978AB24AD1FE100BFCB0D /* Frameworks */,
@@ -175,6 +176,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		7AEDA2792ED2BC4500C80C02 /* Check Dev Environment for Common Errors */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check Dev Environment for Common Errors";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Scripts/environment-check.sh\"\n";
+		};
 		CD4CAA772510F53E0002D69B /* Build Number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
