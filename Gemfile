@@ -9,7 +9,7 @@ source 'https://rubygems.org'
 # 7. x gem install bundler
 # 8. x bundle install
 
-gem 'fastlane'
+gem 'fastlane', '2.228.0' # https://github.com/fastlane/fastlane/issues/29766
 
 # required by fastlane
 gem 'abbrev'
