@@ -1,6 +1,10 @@
 # Keyb
 
-<img src="./Keyb/Resources/Assets.xcassets/AppIcon.appiconset/Mac%20App%20128pt@2x.png" width=128 alt="Keyb app icon" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" width=128 srcset=".github/keyb-app-icon-dark@3x.png" />
+  <source media="(prefers-color-scheme: light)" width=128 srcset=".github/keyb-app-icon-light@3x.png" />
+  <img alt="Keyb app icon" width=128 src=".github/keyb-app-icon-light@3x.png" />
+</picture>
 
 Keyb is a Mac app that lets you type more easily with one hand. It was inspired by the concept of a [half-QWERTY keyboard](https://www.billbuxton.com/matias93.html), plus the need to be able to type with one hand while [holding a baby](https://twitter.com/zeveisenberg/status/1268585275346898950). If you often find yourself typing with one hand, this app may be useful to you.
 
