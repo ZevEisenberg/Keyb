@@ -50,3 +50,26 @@ final class IntCounter {
     return newInitialValue
   }
 }
+
+#Preview {
+  HStack(alignment: .top) {
+    ForEach([false, true], id: \.self) { includeExtraItem in
+      AutoNumberingView { counter in
+        VStack(alignment: .leading) {
+          Text("\(counter()). This is the first item.")
+            .foregroundColor(.blue)
+          Text("\(counter()). This is the second item.")
+            .foregroundColor(.green)
+          if includeExtraItem {
+            Text("\(counter()). This is the secret third item.")
+              .foregroundColor(.purple)
+          }
+          Text("\(counter()). This is the third or fourth item, depending on what came before")
+            .foregroundColor(.yellow)
+        }
+        .frame(width: 300)
+        .padding()
+      }
+    }
+  }
+}
