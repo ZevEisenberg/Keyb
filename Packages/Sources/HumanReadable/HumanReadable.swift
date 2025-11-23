@@ -1,50 +1,68 @@
 import Carbon.HIToolbox
 
 public extension CGEventType {
-    var humanReadable: String {
-        switch self {
-        case .null: return "null"
-        case .leftMouseDown: return "leftMouseDown"
-        case .leftMouseUp: return "leftMouseUp"
-        case .rightMouseDown: return "rightMouseDown"
-        case .rightMouseUp: return "rightMouseUp"
-        case .mouseMoved: return "mouseMoved"
-        case .leftMouseDragged: return "leftMouseDragged"
-        case .rightMouseDragged: return "rightMouseDragged"
-        case .keyDown: return "keyDown"
-        case .keyUp: return "keyUp"
-        case .flagsChanged: return "flagsChanged"
-        case .scrollWheel: return "scrollWheel"
-        case .tabletPointer: return "tabletPointer"
-        case .tabletProximity: return "tabletProximity"
-        case .otherMouseDown: return "otherMouseDown"
-        case .otherMouseUp: return "otherMouseUp"
-        case .otherMouseDragged: return "otherMouseDragged"
-        case .tapDisabledByTimeout: return "tapDisabledByTimeout"
-        case .tapDisabledByUserInput: return "tapDisabledByUserInput"
-        @unknown default:
-            return "unknown case \(self.rawValue)"
-        }
+  var humanReadable: String {
+    switch self {
+    case .null:
+      "null"
+    case .leftMouseDown:
+      "leftMouseDown"
+    case .leftMouseUp:
+      "leftMouseUp"
+    case .rightMouseDown:
+      "rightMouseDown"
+    case .rightMouseUp:
+      "rightMouseUp"
+    case .mouseMoved:
+      "mouseMoved"
+    case .leftMouseDragged:
+      "leftMouseDragged"
+    case .rightMouseDragged:
+      "rightMouseDragged"
+    case .keyDown:
+      "keyDown"
+    case .keyUp:
+      "keyUp"
+    case .flagsChanged:
+      "flagsChanged"
+    case .scrollWheel:
+      "scrollWheel"
+    case .tabletPointer:
+      "tabletPointer"
+    case .tabletProximity:
+      "tabletProximity"
+    case .otherMouseDown:
+      "otherMouseDown"
+    case .otherMouseUp:
+      "otherMouseUp"
+    case .otherMouseDragged:
+      "otherMouseDragged"
+    case .tapDisabledByTimeout:
+      "tapDisabledByTimeout"
+    case .tapDisabledByUserInput:
+      "tapDisabledByUserInput"
+    @unknown default:
+      "unknown case \(rawValue)"
     }
+  }
 }
 
 public extension CGEventFlags {
-    var humanReadable: String {
-        let names: KeyValuePairs<CGEventFlags, String> = [
-            .maskAlphaShift: "Caps Lock",
-            .maskShift: "Shift",
-            .maskControl: "Control",
-            .maskAlternate: "Option",
-            .maskCommand: "Command",
-            .maskHelp: "Help",
-            .maskSecondaryFn: "Fn",
-            .maskNumericPad: "Number Pad",
-            .maskNonCoalesced: "Non-Coalesced",
-        ]
+  var humanReadable: String {
+    let names: KeyValuePairs<CGEventFlags, String> = [
+      .maskAlphaShift: "Caps Lock",
+      .maskShift: "Shift",
+      .maskControl: "Control",
+      .maskAlternate: "Option",
+      .maskCommand: "Command",
+      .maskHelp: "Help",
+      .maskSecondaryFn: "Fn",
+      .maskNumericPad: "Number Pad",
+      .maskNonCoalesced: "Non-Coalesced",
+    ]
 
-        return names
-            .compactMap { flag, name in self.contains(flag) ? name : nil }
-            .joined(separator: " ")
-    }
+    return names
+      .compactMap { flag, name in self.contains(flag) ? name : nil }
+      .joined(separator: " ")
+  }
 }
-

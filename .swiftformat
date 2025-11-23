@@ -1,0 +1,32 @@
+--exclude .build/**/*
+--exclude Scripts/**/*
+
+# rules
+
+--disable trailingClosures
+--enable blankLinesBetweenScopes
+--enable emptyExtensions
+--enable environmentEntry
+--enable privateStateVariables
+--enable redundantEquatable
+--enable wrapEnumCases
+--enable wrapSwitchCases
+
+# options
+
+--binary-grouping 4,8
+--decimal-grouping 3,5
+--exponent-case lowercase
+--header strip
+--ifdef no-indent
+--import-grouping testable-last
+--indent 2
+--pattern-let inline
+--ranges no-space
+--self init-only
+--some-Any false
+--trailing-commas collections-only
+--strip-unused-args unnamed-only
+--wrap-arguments before-first
+--wrap-collections before-first
+--wrap-parameters before-first
