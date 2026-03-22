@@ -1,9 +1,16 @@
 --exclude .build/**/*
 --exclude Scripts/**/*
 
-# rules
+# Disabled Rules
 
+--disable blankLinesBetweenImports
+--disable redundantSwiftTestingSuite
+--disable redundantVariable
+--disable swiftTestingTestCaseNames
 --disable trailingClosures
+
+# Enabled Rules
+
 --enable blankLinesBetweenScopes
 --enable emptyExtensions
 --enable environmentEntry

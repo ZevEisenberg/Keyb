@@ -103,7 +103,8 @@ let package = Package(
       ]
     ),
     .target(
-      name: "HumanReadable"),
+      name: "HumanReadable"
+    ),
   ]
 )
 
