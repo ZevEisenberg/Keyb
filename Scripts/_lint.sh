@@ -68,7 +68,9 @@ function maybeEcho() {
 }
 
 function latestTag() {
-  git ls-remote --tags "https://github.com/$1" 2>/dev/null | grep "\S\.\S*" | grep -v 'beta' | grep -v "\^{}" | awk -F / '{print $3}' | sort -rV | head -n 1
+    # -s option for curl is to be silent (no progress meter or error messages)
+    # -r option for jq is to output raw strings without quotes
+    curl -s https://api.github.com/repos/$1/releases/latest | jq -r '.tag_name'
 }
 
 function updateToLatest() {
