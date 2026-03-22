@@ -8,13 +8,17 @@ public struct AppDelegateFeature {
     public var hasPermission: Bool
   }
 
-  public func reduce(into state: inout State, action: UserInterface.Action) -> Effect<UserInterface.Action> {
-    switch action {
-    case .changeObservingState(observing: let observing):
-      state.isDockMenuItemChecked = observing
-      return .none
-    default:
-      return .none
+  public typealias Action = UserInterface.Action
+
+  public var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .changeObservingState(observing: let observing):
+        state.isDockMenuItemChecked = observing
+        return .none
+      default:
+        return .none
+      }
     }
   }
 }

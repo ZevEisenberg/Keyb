@@ -1,9 +1,8 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
-@MainActor
 extension Target.Dependency {
   static let accessibilityClient: Self = "AccessibilityClient"
   static let eventHandlerClient: Self = "EventHandlerClient"
@@ -17,7 +16,7 @@ extension Target.Dependency {
 let package = Package(
   name: "Packages",
   platforms: [
-    .macOS(.v11),
+    .macOS(.v13),
   ],
   products: [
     .singleTargetLibrary("UserInterface"),
@@ -30,8 +29,15 @@ let package = Package(
     .singleTargetLibrary("HumanReadable"),
   ],
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.23.1"),
-    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.10.0"),
+    .package(
+      url: "https://github.com/pointfreeco/swift-composable-architecture",
+      exact: "1.25.2",
+      traits: ["ComposableArchitecture2Deprecations"]
+    ),
+    .package(
+      url: "https://github.com/pointfreeco/swift-dependencies",
+      exact: "1.11.0"
+    ),
   ],
   targets: [
     .target(

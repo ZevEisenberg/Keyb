@@ -67,84 +67,86 @@ public struct UserInterface {
   @Dependency(\.eventHandlerClient) var eventHandlerClient
   @Dependency(\.mainQueue) var mainQueue
 
-  public func reduce(into state: inout State, action: Action) -> Effect<Action> {
-    struct TimerID: Hashable {}
+  public var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      struct TimerID: Hashable {}
 
-    switch action {
-    case .didAppear:
-      return .send(.checkForPermissions)
+      switch action {
+      case .didAppear:
+        return .send(.checkForPermissions)
 
-    case .checkForPermissions:
-      return .run { @MainActor [accessibilityClient] send in
-        let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
-        send(.permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
-      }
+      case .checkForPermissions:
+        return .run { @MainActor [accessibilityClient] send in
+          let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
+          send(.permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
+        }
 
-    case .promptForPermission:
-      return .run { [accessibilityClient] send in
-        let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
-        await send(.promptedForPermission(isCurrentlyTrusted: isCurrentlyTrusted))
-      }
+      case .promptForPermission:
+        return .run { [accessibilityClient] send in
+          let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
+          await send(.promptedForPermission(isCurrentlyTrusted: isCurrentlyTrusted))
+        }
 
-    case .promptedForPermission(let isCurrentlyTrusted):
-      guard !isCurrentlyTrusted else {
-        state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
+      case .promptedForPermission(let isCurrentlyTrusted):
+        guard !isCurrentlyTrusted else {
+          state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
+          return .none
+        }
+
+        state.mode = .noAccessibilityPermission(.awaitingUser)
+        return .run { [eventHandlerClient, mainQueue] send in
+          let provisionalStartResult = await eventHandlerClient.startProvisional()
+          await send(.permissionChanged(hasAccessibilityPermission: provisionalStartResult))
+
+          for await _ in mainQueue.timer(interval: 0.5) {
+            await send(.checkForPermissions)
+          }
+        }
+        .cancellable(id: TimerID())
+
+      case .permissionChanged(let hasAccessibilityPermission):
+        var effects: [Effect<UserInterface.Action>] = [.none]
+        if hasAccessibilityPermission {
+          // cancel if permissions changed
+          if case .noAccessibilityPermission = state.mode {
+            effects.append(.cancel(id: TimerID()))
+          }
+          state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
+        } else {
+          // cancel if permissions changed
+          if case .hasAccessibilityPermission = state.mode {
+            effects.append(.cancel(id: TimerID()))
+          }
+          //            // TODO: can we learn more here?
+          //            state.mode = .noAccessibilityPermission(.hasNotPromptedYet)
+        }
+        return .concatenate(effects)
+
+      case .changeObservingState(let observing):
+        if observing {
+          return .run { @MainActor [eventHandlerClient] send in
+            let startSuccess = eventHandlerClient.startActive()
+            send(.startActiveCalled(startSuccess: startSuccess))
+          }
+        } else {
+          state.mode = .hasAccessibilityPermission(isRunning: false)
+          return .run { @MainActor [eventHandlerClient] _ in
+            eventHandlerClient.stop()
+          }
+        }
+
+      case .startActiveCalled(let startSuccess):
+        state.mode = .hasAccessibilityPermission(isRunning: startSuccess)
+        if startSuccess {
+          return .none
+        } else {
+          return .send(.permissionsError)
+        }
+
+      case .permissionsError:
+        state.mode = .noAccessibilityPermission(.permissionError)
         return .none
       }
-
-      state.mode = .noAccessibilityPermission(.awaitingUser)
-      return .run { [eventHandlerClient, mainQueue] send in
-        let provisionalStartResult = await eventHandlerClient.startProvisional()
-        await send(.permissionChanged(hasAccessibilityPermission: provisionalStartResult))
-
-        for await _ in mainQueue.timer(interval: 0.5) {
-          await send(.checkForPermissions)
-        }
-      }
-      .cancellable(id: TimerID())
-
-    case .permissionChanged(let hasAccessibilityPermission):
-      var effects: [Effect<UserInterface.Action>] = [.none]
-      if hasAccessibilityPermission {
-        // cancel if permissions changed
-        if case .noAccessibilityPermission = state.mode {
-          effects.append(.cancel(id: TimerID()))
-        }
-        state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
-      } else {
-        // cancel if permissions changed
-        if case .hasAccessibilityPermission = state.mode {
-          effects.append(.cancel(id: TimerID()))
-        }
-        //            // TODO: can we learn more here?
-        //            state.mode = .noAccessibilityPermission(.hasNotPromptedYet)
-      }
-      return .concatenate(effects)
-
-    case .changeObservingState(let observing):
-      if observing {
-        return .run { @MainActor [eventHandlerClient] send in
-          let startSuccess = eventHandlerClient.startActive()
-          send(.startActiveCalled(startSuccess: startSuccess))
-        }
-      } else {
-        state.mode = .hasAccessibilityPermission(isRunning: false)
-        return .run { @MainActor [eventHandlerClient] _ in
-          eventHandlerClient.stop()
-        }
-      }
-
-    case .startActiveCalled(let startSuccess):
-      state.mode = .hasAccessibilityPermission(isRunning: startSuccess)
-      if startSuccess {
-        return .none
-      } else {
-        return .send(.permissionsError)
-      }
-
-    case .permissionsError:
-      state.mode = .noAccessibilityPermission(.permissionError)
-      return .none
     }
   }
 }

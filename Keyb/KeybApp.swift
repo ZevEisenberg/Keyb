@@ -40,14 +40,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
   let store: StoreOf<UserInterface>
 
-  @MainActor
-  lazy var viewStore = ViewStore(store, observe: \.appDelegate)
-
   func applicationDockMenu(_: NSApplication) -> NSMenu? {
-    guard viewStore.hasPermission
+    guard store.appDelegate.hasPermission
     else { return nil }
 
-    let isChecked = viewStore.isDockMenuItemChecked
+    let isChecked = store.appDelegate.isDockMenuItemChecked
     let menu = NSMenu()
     let item = NSMenuItem(
       title: "Enable One-Handed Typing",
@@ -62,11 +59,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
   @MainActor
   @objc func enable() {
-    viewStore.send(.changeObservingState(observing: true))
+    store.send(.changeObservingState(observing: true))
   }
 
   @MainActor
   @objc func disable() {
-    viewStore.send(.changeObservingState(observing: false))
+    store.send(.changeObservingState(observing: false))
   }
 }
