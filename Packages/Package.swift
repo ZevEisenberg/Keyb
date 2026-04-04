@@ -31,12 +31,12 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture",
-      exact: "1.25.2",
+      exact: "1.25.5",
       traits: ["ComposableArchitecture2Deprecations"]
     ),
     .package(
       url: "https://github.com/pointfreeco/swift-dependencies",
-      exact: "1.11.0"
+      exact: "1.12.0"
     ),
   ],
   targets: [

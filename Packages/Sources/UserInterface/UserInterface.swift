@@ -105,22 +105,25 @@ public struct UserInterface {
         .cancellable(id: TimerID())
 
       case .permissionChanged(let hasAccessibilityPermission):
-        var effects: [Effect<UserInterface.Action>] = [.none]
+        if hasAccessibilityPermission {
+          state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
+        } else {
+//          // TODO: can we learn more here?
+//          state.mode = .noAccessibilityPermission(.hasNotPromptedYet)
+        }
+
         if hasAccessibilityPermission {
           // cancel if permissions changed
           if case .noAccessibilityPermission = state.mode {
-            effects.append(.cancel(id: TimerID()))
+            Task.cancel(id: TimerID())
           }
-          state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
         } else {
           // cancel if permissions changed
           if case .hasAccessibilityPermission = state.mode {
-            effects.append(.cancel(id: TimerID()))
+            Task.cancel(id: TimerID())
           }
-          //            // TODO: can we learn more here?
-          //            state.mode = .noAccessibilityPermission(.hasNotPromptedYet)
         }
-        return .concatenate(effects)
+        return .none
 
       case .changeObservingState(let observing):
         if observing {
