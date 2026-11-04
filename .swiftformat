@@ -1,25 +1,31 @@
+# Excludes
+
 --exclude .build/**/*
 --exclude Scripts/**/*
 
 # Disabled Rules
 
 --disable blankLinesBetweenImports
+--disable modifiersOnSameLine
 --disable redundantSwiftTestingSuite
 --disable redundantVariable
+--disable repeatedGuard
 --disable swiftTestingTestCaseNames
 --disable trailingClosures
 
 # Enabled Rules
 
 --enable blankLinesBetweenScopes
+--enable commonTypos
 --enable emptyExtensions
 --enable environmentEntry
---enable privateStateVariables
+--enable noForceTryInTests
+--enable noGuardInTests
 --enable redundantEquatable
 --enable wrapEnumCases
 --enable wrapSwitchCases
 
-# options
+# Options
 
 --binary-grouping 4,8
 --decimal-grouping 3,5
@@ -31,9 +37,9 @@
 --pattern-let inline
 --ranges no-space
 --self init-only
---some-Any false
---trailing-commas collections-only
+--someAny false
 --strip-unused-args unnamed-only
+--trailing-commas collections-only
 --wrap-arguments before-first
 --wrap-collections before-first
 --wrap-parameters before-first

@@ -1,32 +1,22 @@
 // swift-tools-version: 6.4
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
-extension Target.Dependency {
-  static let accessibilityClient: Self = "AccessibilityClient"
-  static let eventHandlerClient: Self = "EventHandlerClient"
-  static let humanReadable: Self = "HumanReadable"
-  static let keyProcessor: Self = "KeyProcessor"
-  static let userInterface: Self = "UserInterface"
-
-  static let composableArchitecture: Self = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
-}
-
+// swiftformat:sort
 let package = Package(
   name: "Packages",
   platforms: [
     .macOS(.v13),
   ],
   products: [
-    .singleTargetLibrary("UserInterface"),
-    .singleTargetLibrary("KeyProcessor"),
     .singleTargetLibrary("AccessibilityClient"),
     .singleTargetLibrary("AccessibilityClientLive"),
     .singleTargetLibrary("EventHandler"),
     .singleTargetLibrary("EventHandlerClient"),
     .singleTargetLibrary("EventHandlerClientLive"),
     .singleTargetLibrary("HumanReadable"),
+    .singleTargetLibrary("KeyProcessor"),
+    .singleTargetLibrary("UserInterface"),
   ],
   dependencies: [
     .package(
@@ -41,31 +31,16 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: "UserInterface",
+      name: "AccessibilityClient",
       dependencies: [
-        .accessibilityClient,
-        .eventHandlerClient,
-        .keyProcessor,
         .composableArchitecture,
-      ]
-    ),
-    .testTarget(
-      name: "UserInterfaceTests",
-      dependencies: [
-        .userInterface,
+        .dependenciesMacros,
       ]
     ),
     .target(
-      name: "KeyProcessor",
+      name: "AccessibilityClientLive",
       dependencies: [
-        .humanReadable,
-      ]
-    ),
-    .testTarget(
-      name: "KeyProcessorTests",
-      dependencies: [
-        .humanReadable,
-        .keyProcessor,
+        .accessibilityClient,
       ]
     ),
     .target(
@@ -79,31 +54,46 @@ let package = Package(
       name: "EventHandlerClient",
       dependencies: [
         .composableArchitecture,
-        .product(name: "DependenciesMacros", package: "swift-dependencies"),
+        .dependenciesMacros,
       ]
     ),
     .target(
       name: "EventHandlerClientLive",
       dependencies: [
-        "EventHandler",
+        .eventHandler,
         .eventHandlerClient,
       ]
     ),
     .target(
-      name: "AccessibilityClient",
+      name: "HumanReadable"
+    ),
+    .target(
+      name: "KeyProcessor",
       dependencies: [
-        .composableArchitecture,
-        .product(name: "DependenciesMacros", package: "swift-dependencies"),
+        .humanReadable,
       ]
     ),
     .target(
-      name: "AccessibilityClientLive",
+      name: "UserInterface",
       dependencies: [
         .accessibilityClient,
+        .composableArchitecture,
+        .eventHandlerClient,
+        .keyProcessor,
       ]
     ),
-    .target(
-      name: "HumanReadable"
+    .testTarget(
+      name: "KeyProcessorTests",
+      dependencies: [
+        .humanReadable,
+        .keyProcessor,
+      ]
+    ),
+    .testTarget(
+      name: "UserInterfaceTests",
+      dependencies: [
+        .userInterface,
+      ]
     ),
   ]
 )
@@ -112,4 +102,22 @@ extension Product {
   static func singleTargetLibrary(_ name: String) -> Product {
     .library(name: name, targets: [name])
   }
+}
+
+// Internal
+// swiftformat:sort
+extension Target.Dependency {
+  static let accessibilityClient: Self = "AccessibilityClient"
+  static let eventHandler: Self = "EventHandler"
+  static let eventHandlerClient: Self = "EventHandlerClient"
+  static let humanReadable: Self = "HumanReadable"
+  static let keyProcessor: Self = "KeyProcessor"
+  static let userInterface: Self = "UserInterface"
+}
+
+// External
+// swiftformat:sort
+extension Target.Dependency {
+  static let composableArchitecture: Self = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+  static let dependenciesMacros: Self = .product(name: "DependenciesMacros", package: "swift-dependencies")
 }

@@ -54,10 +54,12 @@ opt_in_rules:
   - operator_usage_whitespace
   - overridden_super_call
   - override_in_extension
+  - private_swiftui_state
   - prohibited_interface_builder
   - prohibited_super_call
   - reduce_boolean
   - reduce_into
+  - redundant_discardable_let
   - redundant_type_annotation
   - self_binding
   - single_test_class
@@ -76,4 +78,5 @@ modifier_order:
 
 excluded:
   - .build
+  - Packages/.build
   - Scripts

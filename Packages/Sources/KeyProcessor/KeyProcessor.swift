@@ -58,11 +58,12 @@ public final class KeyProcessor {
           return unmodifiedEvent()
         } else {
           // simulate a key down so we type a space when space is released
-          if let spaceDown = CGEvent(
-            keyboardEventSource: CGEventSource(event: event),
-            virtualKey: CGKeyCode(kVK_Space),
-            keyDown: true
-          ),
+          if
+            let spaceDown = CGEvent(
+              keyboardEventSource: CGEventSource(event: event),
+              virtualKey: CGKeyCode(kVK_Space),
+              keyDown: true
+            ),
             let spaceUp = CGEvent(
               keyboardEventSource: CGEventSource(event: event),
               virtualKey: CGKeyCode(kVK_Space),
