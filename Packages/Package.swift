@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3
+// swift-tools-version: 6.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -31,12 +31,12 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture",
-      exact: "1.25.5",
+      exact: "1.26.2",
       traits: ["ComposableArchitecture2Deprecations"]
     ),
     .package(
       url: "https://github.com/pointfreeco/swift-dependencies",
-      exact: "1.12.0"
+      exact: "1.17.2"
     ),
   ],
   targets: [

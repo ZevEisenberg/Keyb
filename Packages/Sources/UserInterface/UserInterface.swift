@@ -163,7 +163,7 @@ public struct AppFeature {
 
   public var body: some Reducer<UserInterface.State, UserInterface.Action> {
     UserInterface()
-    Scope(state: \.appDelegate, action: \.self) {
+    Scope(\.appDelegate, action: \.self) {
       AppDelegateFeature()
     }
   }
