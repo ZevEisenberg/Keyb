@@ -18,7 +18,7 @@ struct UserInterfaceTests {
 
     let store = TestStore(
       initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     ) {
       $0.accessibilityClient = .init(isCurrentlyTrusted: { currentlyTrusted.value })
       $0.eventHandlerClient = .init(
@@ -75,7 +75,7 @@ struct UserInterfaceTests {
 
     let store = TestStore(
       initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     ) {
       $0.accessibilityClient = .init(isCurrentlyTrusted: { true })
       $0.eventHandlerClient = .init(

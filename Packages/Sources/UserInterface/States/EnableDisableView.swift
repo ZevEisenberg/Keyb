@@ -24,7 +24,7 @@ struct EnableDisableView: View {
   EnableDisableView(
     store: .init(
       initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     ) {
       $0.accessibilityClient = .accessibilityIsNotGranted
       $0.eventHandlerClient = .noop(enabled: false)

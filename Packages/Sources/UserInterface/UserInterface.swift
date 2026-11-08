@@ -67,6 +67,8 @@ public struct UserInterface {
   @Dependency(\.eventHandlerClient) var eventHandlerClient
   @Dependency(\.mainQueue) var mainQueue
 
+  public init() {}
+
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       struct TimerID: Hashable {}
@@ -127,6 +129,9 @@ public struct UserInterface {
 
       case .changeObservingState(let observing):
         if observing {
+          // Optimistically show as running so toggles respond immediately.
+          // startActiveCalled corrects this if starting fails.
+          state.isRunning = true
           return .run { @MainActor [eventHandlerClient] send in
             let startSuccess = eventHandlerClient.startActive()
             send(.startActiveCalled(startSuccess: startSuccess))
@@ -150,21 +155,6 @@ public struct UserInterface {
         state.mode = .noAccessibilityPermission(.permissionError)
         return .none
       }
-    }
-  }
-}
-
-@Reducer
-public struct AppFeature {
-  public typealias State = UserInterface.State
-  public typealias Action = UserInterface.Action
-
-  public init() {}
-
-  public var body: some Reducer<UserInterface.State, UserInterface.Action> {
-    UserInterface()
-    Scope(\.appDelegate, action: \.self) {
-      AppDelegateFeature()
     }
   }
 }
@@ -204,7 +194,7 @@ public struct UserInterfaceView: View {
   UserInterfaceView(
     store: .init(
       initialState: .init(mode: .hasAccessibilityPermission(isRunning: false)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     ) {
       $0.accessibilityClient = .accessibilityIsEnabled
       $0.eventHandlerClient = .noop(enabled: false)
@@ -217,7 +207,7 @@ public struct UserInterfaceView: View {
   UserInterfaceView(
     store: .init(
       initialState: .init(mode: .hasAccessibilityPermission(isRunning: true)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     ) {
       $0.accessibilityClient = .accessibilityIsEnabled
       $0.eventHandlerClient = .noop(enabled: true)
@@ -230,7 +220,7 @@ public struct UserInterfaceView: View {
   UserInterfaceView(
     store: .init(
       initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     ) {
       $0.accessibilityClient = .accessibilityIsNotGranted
       $0.eventHandlerClient = .noop(enabled: true)
@@ -243,7 +233,7 @@ public struct UserInterfaceView: View {
   UserInterfaceView(
     store: .init(
       initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     ) {
       $0.accessibilityClient = .accessibilityIsNotGranted
       $0.eventHandlerClient = .noop(enabled: true)

@@ -1,5 +1,5 @@
+import AccessibilityClient
 import AccessibilityClientLive
-import Combine
 import ComposableArchitecture
 import EventHandler
 import EventHandlerClientLive
@@ -46,37 +46,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   override init() {
     self.store = Store(
       initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     )
     super.init()
   }
 
   let store: StoreOf<UserInterface>
 
-  func applicationDockMenu(_: NSApplication) -> NSMenu? {
-    guard store.appDelegate.hasPermission
-    else { return nil }
-
-    let isChecked = store.appDelegate.isDockMenuItemChecked
-    let menu = NSMenu()
-    let item = NSMenuItem(
-      title: "Enable One-Handed Typing",
-      action: isChecked ? #selector(disable) : #selector(enable),
-      keyEquivalent: ""
-    )
-    // Checkmark if currently enabled
-    item.state = isChecked ? .on : .off
-    menu.addItem(item)
-    return menu
-  }
+  @Dependency(\.accessibilityClient) private var accessibilityClient
 
   @MainActor
-  @objc func enable() {
-    store.send(.changeObservingState(observing: true))
-  }
-
-  @MainActor
-  @objc func disable() {
-    store.send(.changeObservingState(observing: false))
+  func applicationDidFinishLaunching(_: Notification) {
+    // Keyb lives in the menu bar (LSUIElement). Only show the main window at
+    // launch when the user still needs to grant Accessibility permission.
+    store.send(.checkForPermissions)
+    if accessibilityClient.isCurrentlyTrusted() {
+      for window in NSApp.windows where window.canBecomeMain {
+        window.close()
+      }
+    } else {
+      NSApp.activate(ignoringOtherApps: true)
+    }
   }
 }

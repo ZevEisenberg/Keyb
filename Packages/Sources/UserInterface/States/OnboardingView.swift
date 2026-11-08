@@ -29,7 +29,7 @@ struct OnboardingView: View {
   OnboardingView(
     store: .init(
       initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
-      reducer: AppFeature.init
+      reducer: UserInterface.init
     ) {
       $0.accessibilityClient = .accessibilityIsNotGranted
       $0.eventHandlerClient = .noop(enabled: false)
