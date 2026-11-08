@@ -12,7 +12,7 @@ g = Git.open('.', :log => logger)
 
 # pass nil for the count of the log to get all commits:
 # https://github.com/ruby-git/ruby-git/issues/182
-commit_count = g.log(nil).count
+commit_count = g.log(nil).execute.size
 
 branch_name = g.current_branch
 build_number_debug = "#{commit_count}-#{branch_name}"
