@@ -19,6 +19,10 @@ struct KeybApp: App {
     Window("Keyb", id: Self.mainWindowID) {
       UserInterfaceView(store: appDelegate.store)
     }
+    // Keyb lives in the menu bar (LSUIElement). Only show the main window at
+    // launch when the user still needs to grant Accessibility permission.
+    .defaultLaunchBehavior(appDelegate.needsSetupAtLaunch ? .presented : .suppressed)
+    .restorationBehavior(.disabled)
     .commands {
       CommandGroup(replacing: .help) {
         Button(action: {
@@ -53,19 +57,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
   let store: StoreOf<UserInterface>
 
-  @Dependency(\.accessibilityClient) private var accessibilityClient
+  /// Whether Accessibility permission was missing when the app launched.
+  let needsSetupAtLaunch: Bool = {
+    @Dependency(\.accessibilityClient) var accessibilityClient
+    return !accessibilityClient.isCurrentlyTrusted()
+  }()
 
   @MainActor
   func applicationDidFinishLaunching(_: Notification) {
-    // Keyb lives in the menu bar (LSUIElement). Only show the main window at
-    // launch when the user still needs to grant Accessibility permission.
     store.send(.checkForPermissions)
-    if accessibilityClient.isCurrentlyTrusted() {
-      for window in NSApp.windows where window.canBecomeMain {
-        window.close()
-      }
-    } else {
-      NSApp.activate(ignoringOtherApps: true)
+    if needsSetupAtLaunch {
+      NSApp.activate()
     }
   }
 }
