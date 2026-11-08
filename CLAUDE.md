@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Keyb is a macOS app (deployment target 13.0, Swift 6.4) for one-handed typing. It installs a system-wide `CGEvent` tap. While the spacebar is held, it mirrors the keyboard left-to-right. A space is typed on space key-up, but only if no other key was flipped during the hold. The mirror mapping is built for US-English QWERTY only.
 
+## Open source: keep sensitive information out
+
+This repo is public. Take extra care that nothing personal, secret or sensitive gets committed, including in code comments, docs, commit messages, test fixtures and screenshots. Feedback from users, especially users with disabilities, can be sensitive: never put their names, or anything else that identifies them, in the repo unless they have expressly given permission. Describe the feedback and its effect on the app without saying who it came from.
+
 ## Setup
 
 - `Scripts/bootstrap.sh` must run once per clone. It installs the git pre-commit hook (which runs lint), Git LFS, and `blame.ignoreRevsFile`. It also marks `Keyb/Resources/xcconfig/BuildNumber.xcconfig` as `--skip-worktree`.
