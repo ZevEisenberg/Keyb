@@ -19,7 +19,12 @@ This repo is public. Take extra care that nothing personal, secret or sensitive 
 
 ## Tracking work
 
-Open work is tracked in the public GitHub Issues (`gh issue`). Keep tickets terse, covering just the ask, without detailed project context.
+Open work is tracked in the public GitHub Issues (`gh issue`). Keep tickets terse, covering just the ask, without detailed project context. End every issue, comment or PR text you post with this, so readers don't think the maintainer wrote it:
+
+```
+---
+_🤖 Written by Claude Code on behalf of the maintainer._
+```
 
 ## Building and testing
 
