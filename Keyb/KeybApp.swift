@@ -12,18 +12,31 @@ struct KeybApp: App {
 
   @Environment(\.openURL) var openURL
 
+  private static let mainWindowID = "main"
+  private static let helpURL = URL(string: "https://zeveisenberg.com/keyb")!
+
   var body: some Scene {
-    WindowGroup("Keyb") {
+    Window("Keyb", id: Self.mainWindowID) {
       UserInterfaceView(store: appDelegate.store)
     }
     .commands {
       CommandGroup(replacing: .help) {
         Button(action: {
-          openURL(URL(string: "https://zeveisenberg.com/keyb")!)
+          openURL(Self.helpURL)
         }, label: {
           Text("Keyb Help")
         })
       }
+    }
+
+    MenuBarExtra {
+      MenuBarContent(
+        store: appDelegate.store,
+        mainWindowID: Self.mainWindowID,
+        helpURL: Self.helpURL
+      )
+    } label: {
+      MenuBarLabel(store: appDelegate.store)
     }
   }
 }
