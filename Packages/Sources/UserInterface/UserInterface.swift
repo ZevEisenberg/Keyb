@@ -167,7 +167,7 @@ public struct UserInterfaceView: View {
   }
 
   public var body: some View {
-    WithPerceptionTracking {
+    Group {
       switch store.mode {
       case .hasAccessibilityPermission:
         EnableDisableView(store: store)

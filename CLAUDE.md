@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Keyb is a macOS app (deployment target 13.0, Swift 6.4) for one-handed typing. It installs a system-wide `CGEvent` tap. While the spacebar is held, it mirrors the keyboard left-to-right. A space is typed on space key-up, but only if no other key was flipped during the hold. The mirror mapping is built for US-English QWERTY only.
+Keyb is a macOS app (deployment target 15.0, Swift 6.4) for one-handed typing. It installs a system-wide `CGEvent` tap. While the spacebar is held, it mirrors the keyboard left-to-right. A space is typed on space key-up, but only if no other key was flipped during the hold. The mirror mapping is built for US-English QWERTY only.
 
 ## Open source: keep sensitive information out
 

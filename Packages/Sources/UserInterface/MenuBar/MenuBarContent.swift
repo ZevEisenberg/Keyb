@@ -4,7 +4,7 @@ import SwiftUI
 
 /// The contents of the menu bar extra's menu.
 public struct MenuBarContent: View {
-  @Perception.Bindable
+  @Bindable
   var store: StoreOf<UserInterface>
 
   let mainWindowID: String
@@ -20,30 +20,28 @@ public struct MenuBarContent: View {
   }
 
   public var body: some View {
-    WithPerceptionTracking {
-      if store.mode.hasPermission {
-        Toggle(
-          "Enable One-Handed Typing",
-          isOn: $store.mode.isRunning.sending(\.changeObservingState)
-        )
-      } else {
-        Button("Set Up One-Handed Typing…", action: showMainWindow)
-      }
-
-      Divider()
-
-      Button("Show Keyb Window", action: showMainWindow)
-      Button("Keyb Help") { openURL(helpURL) }
-
-      Divider()
-
-      Button("Quit Keyb") { NSApplication.shared.terminate(nil) }
-        .keyboardShortcut("q")
+    if store.mode.hasPermission {
+      Toggle(
+        "Enable One-Handed Typing",
+        isOn: $store.mode.isRunning.sending(\.changeObservingState)
+      )
+    } else {
+      Button("Set Up One-Handed Typing…", action: showMainWindow)
     }
+
+    Divider()
+
+    Button("Show Keyb Window", action: showMainWindow)
+    Button("Keyb Help") { openURL(helpURL) }
+
+    Divider()
+
+    Button("Quit Keyb") { NSApplication.shared.terminate(nil) }
+      .keyboardShortcut("q")
   }
 
   private func showMainWindow() {
     openWindow(id: mainWindowID)
-    NSApplication.shared.activate(ignoringOtherApps: true)
+    NSApplication.shared.activate()
   }
 }

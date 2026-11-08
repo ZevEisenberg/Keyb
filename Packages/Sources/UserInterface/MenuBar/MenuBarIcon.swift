@@ -11,9 +11,7 @@ public struct MenuBarLabel: View {
   }
 
   public var body: some View {
-    WithPerceptionTracking {
-      Image(nsImage: MenuBarIcon.image(isEnabled: store.isRunning))
-    }
+    Image(nsImage: MenuBarIcon.image(isEnabled: store.isRunning))
   }
 }
 
