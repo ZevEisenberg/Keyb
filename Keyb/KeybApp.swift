@@ -49,7 +49,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   @MainActor
   override init() {
     self.store = Store(
-      initialState: .init(mode: .noAccessibilityPermission(.hasNotPromptedYet)),
+      initialState: .init(mode: .unknown),
       reducer: UserInterface.init
     )
     super.init()
@@ -65,7 +65,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
   @MainActor
   func applicationDidFinishLaunching(_: Notification) {
-    store.send(.checkForPermissions)
+    store.send(.task)
     if needsSetupAtLaunch {
       NSApp.activate()
     }

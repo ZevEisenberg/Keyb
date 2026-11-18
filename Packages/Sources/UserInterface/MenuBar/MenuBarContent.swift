@@ -20,12 +20,17 @@ public struct MenuBarContent: View {
   }
 
   public var body: some View {
-    if store.mode.hasPermission {
+    switch store.mode {
+    case .unknown:
+      // Replaced by the first permission check, right after launch.
+      Toggle("Enable One-Handed Typing", isOn: .constant(false))
+        .disabled(true)
+    case .hasAccessibilityPermission:
       Toggle(
         "Enable One-Handed Typing",
         isOn: $store.mode.isRunning.sending(\.changeObservingState)
       )
-    } else {
+    case .noAccessibilityPermission:
       Button("Set Up One-Handed Typing…", action: showMainWindow)
     }
 

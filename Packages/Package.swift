@@ -20,6 +20,10 @@ let package = Package(
   ],
   dependencies: [
     .package(
+      url: "https://github.com/apple/swift-async-algorithms",
+      exact: "1.1.7"
+    ),
+    .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture",
       exact: "1.26.2",
       traits: ["ComposableArchitecture2Deprecations"]
@@ -41,6 +45,7 @@ let package = Package(
       name: "AccessibilityClientLive",
       dependencies: [
         .accessibilityClient,
+        .asyncAlgorithms,
       ]
     ),
     .target(
@@ -92,6 +97,7 @@ let package = Package(
     .testTarget(
       name: "UserInterfaceTests",
       dependencies: [
+        .dependenciesTestSupport,
         .userInterface,
       ]
     ),
@@ -118,6 +124,8 @@ extension Target.Dependency {
 // External
 // swiftformat:sort
 extension Target.Dependency {
+  static let asyncAlgorithms: Self = .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
   static let composableArchitecture: Self = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
   static let dependenciesMacros: Self = .product(name: "DependenciesMacros", package: "swift-dependencies")
+  static let dependenciesTestSupport: Self = .product(name: "DependenciesTestSupport", package: "swift-dependencies")
 }

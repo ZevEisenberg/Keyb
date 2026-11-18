@@ -14,6 +14,8 @@ public struct UserInterface {
         case awaitingUser
       }
 
+      /// Permission hasn't been checked yet, such as at launch before `task` runs.
+      case unknown
       case hasAccessibilityPermission(isRunning: Bool)
       case noAccessibilityPermission(NoAccessibilityPermissionReason)
 
@@ -21,7 +23,8 @@ public struct UserInterface {
         switch self {
         case .hasAccessibilityPermission(isRunning: let isRunning):
           isRunning
-        case .noAccessibilityPermission:
+        case .unknown,
+             .noAccessibilityPermission:
           false
         }
       }
@@ -35,6 +38,11 @@ public struct UserInterface {
     }
 
     public var mode: Mode
+
+    /// Whether the user has ever been asked for, or has granted, Accessibility permission. Lets
+    /// a missing permission be shown as denied or revoked rather than as first-time setup.
+    @Shared(.hasPromptedForAccessibility)
+    public var hasPromptedForAccessibility
 
     public var isRunning: Bool {
       get { mode.isRunning }
@@ -53,7 +61,7 @@ public struct UserInterface {
   }
 
   public enum Action {
-    case didAppear
+    case task
     case promptForPermission
     case promptedForPermission(isCurrentlyTrusted: Bool)
     case permissionChanged(hasAccessibilityPermission: Bool)
@@ -61,6 +69,7 @@ public struct UserInterface {
     case startActiveCalled(startSuccess: Bool)
     case permissionsError
     case checkForPermissions
+    case permissionErrorAppeared
   }
 
   @Dependency(\.accessibilityClient) var accessibilityClient
@@ -74,16 +83,32 @@ public struct UserInterface {
       struct TimerID: Hashable {}
 
       switch action {
-      case .didAppear:
-        return .send(.checkForPermissions)
+      case .task:
+        return .merge(
+          .send(.checkForPermissions),
+          .run { [accessibilityClient] send in
+            for await _ in accessibilityClient.permissionMayHaveChanged() {
+              await send(.checkForPermissions)
+            }
+          }
+        )
 
       case .checkForPermissions:
-        return .run { @MainActor [accessibilityClient] send in
-          let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
-          send(.permissionChanged(hasAccessibilityPermission: isCurrentlyTrusted))
+        // A quick, synchronous read, so the state is right as soon as this action is handled.
+        return .send(.permissionChanged(hasAccessibilityPermission: accessibilityClient.isCurrentlyTrusted()))
+
+      case .permissionErrorAppeared:
+        // Settings only lists apps that have asked for access, and Keyb's entry may be gone, such as
+        // after `tccutil reset` or the user removing it. Ask again so there's a switch to turn on.
+        // If the user already denied access, this does nothing visible. A grant is picked up by
+        // `permissionMayHaveChanged`.
+        // TODO: #54. Asking again doesn't re-add Keyb after the user removes it from the list.
+        return .run { [accessibilityClient] _ in
+          accessibilityClient.requestAccess()
         }
 
       case .promptForPermission:
+        state.$hasPromptedForAccessibility.withLock { $0 = true }
         return .run { [accessibilityClient] send in
           let isCurrentlyTrusted = accessibilityClient.isCurrentlyTrusted()
           await send(.promptedForPermission(isCurrentlyTrusted: isCurrentlyTrusted))
@@ -108,24 +133,33 @@ public struct UserInterface {
 
       case .permissionChanged(let hasAccessibilityPermission):
         if hasAccessibilityPermission {
-          state.mode = .hasAccessibilityPermission(isRunning: state.mode.isRunning)
-        } else {
-//          // TODO: can we learn more here?
-//          state.mode = .noAccessibilityPermission(.hasNotPromptedYet)
+          state.$hasPromptedForAccessibility.withLock { $0 = true }
+          if !state.mode.hasPermission {
+            state.mode = .hasAccessibilityPermission(isRunning: false)
+          }
+          return .cancel(id: TimerID())
         }
 
-        if hasAccessibilityPermission {
-          // cancel if permissions changed
-          if case .noAccessibilityPermission = state.mode {
-            Task.cancel(id: TimerID())
+        switch state.mode {
+        case .unknown:
+          state.mode = .noAccessibilityPermission(
+            state.hasPromptedForAccessibility ? .permissionError : .hasNotPromptedYet
+          )
+          return .none
+
+        case .hasAccessibilityPermission(let isRunning):
+          // Permission was revoked while the app was running.
+          state.mode = .noAccessibilityPermission(.permissionError)
+          guard isRunning else {
+            return .none
           }
-        } else {
-          // cancel if permissions changed
-          if case .hasAccessibilityPermission = state.mode {
-            Task.cancel(id: TimerID())
+          return .run { @MainActor [eventHandlerClient] _ in
+            eventHandlerClient.stop()
           }
+
+        case .noAccessibilityPermission:
+          return .none
         }
-        return .none
 
       case .changeObservingState(let observing):
         if observing {
@@ -159,6 +193,12 @@ public struct UserInterface {
   }
 }
 
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var hasPromptedForAccessibility: Self {
+    Self[.appStorage("hasPromptedForAccessibility"), default: false]
+  }
+}
+
 public struct UserInterfaceView: View {
   let store: StoreOf<UserInterface>
 
@@ -169,6 +209,9 @@ public struct UserInterfaceView: View {
   public var body: some View {
     Group {
       switch store.mode {
+      case .unknown:
+        // Replaced by the first permission check, right after launch.
+        EmptyView()
       case .hasAccessibilityPermission:
         EnableDisableView(store: store)
       case .noAccessibilityPermission(let reason):
@@ -176,14 +219,11 @@ public struct UserInterfaceView: View {
         case .hasNotPromptedYet:
           OnboardingView(store: store)
         case .permissionError:
-          PermissionErrorView(mode: .problem)
+          PermissionErrorView(mode: .problem, store: store)
         case .awaitingUser:
-          PermissionErrorView(mode: .awaiting)
+          PermissionErrorView(mode: .awaiting, store: store)
         }
       }
-    }
-    .onAppear {
-      store.send(.didAppear)
     }
     .frame(width: 400)
     .padding()

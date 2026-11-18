@@ -1,3 +1,4 @@
+import ComposableArchitecture
 import SwiftUI
 
 struct PermissionErrorView: View {
@@ -16,6 +17,7 @@ struct PermissionErrorView: View {
   }
 
   let mode: Mode
+  let store: StoreOf<UserInterface>
 
   var body: some View {
     VStack(alignment: .leading) {
@@ -25,28 +27,24 @@ struct PermissionErrorView: View {
       Spacer()
         .frame(height: 10)
 
-      let settingsAppName = UserConfigurationName.current.settingsAppName
-      let paneName = UserConfigurationName.current.privacyAndSecurityPaneName
-
+      // No button: the system's Accessibility alert doesn't come back once the user has answered
+      // it, and there's no way to tell whether it appeared, so describe the path instead.
+      // TODO: #46. This path is wrong on macOS 27.2.1, where the pane is Privacy & Security →
+      // Device Control and Data Access. Other versions are unchecked.
+      // TODO: #54. If Keyb was removed from the list, there's no switch to enable, and these steps
+      // don't help.
       AutoNumberingView { counter in
-        Text("\(counter()). Open \(boldText(settingsAppName)) → \(boldText(paneName)):")
-        OpenPrivacyAndSecuritySettingsButton()
-        Text("\(counter()). Click on \(boldText("Accessibility")) if it is not already selected.")
-
-        if UserConfigurationName.current == .preferences {
-          // older versions of macOS have a lock icon, but newer ones do not
-          Text("\(counter()). Click the 🔒 at the bottom to unlock it.")
-        }
-
-        switch UserConfigurationName.current {
-        case .preferences:
-          Text("\(counter()). Check the box next to Keyb.")
-        case .settings:
-          Text("\(counter()). Enable the switch next to Keyb.")
-        }
+        Text("\(counter()). Open \(boldText("System Settings")) → \(boldText("Privacy & Security")).")
+        Text("\(counter()). Click on \(boldText("Accessibility")).")
+        Text("\(counter()). Enable the switch next to Keyb.")
       }
     }
     .fixedSize(horizontal: false, vertical: true)
+    .task {
+      if mode == .problem {
+        store.send(.permissionErrorAppeared)
+      }
+    }
   }
 }
 
@@ -57,11 +55,23 @@ private extension PermissionErrorView {
 }
 
 #Preview("Awaiting") {
-  PermissionErrorView(mode: .awaiting)
-    .frame(width: 400)
+  PermissionErrorView(
+    mode: .awaiting,
+    store: .init(
+      initialState: .init(mode: .noAccessibilityPermission(.awaitingUser)),
+      reducer: UserInterface.init
+    )
+  )
+  .frame(width: 400)
 }
 
 #Preview("Problem") {
-  PermissionErrorView(mode: .problem)
-    .frame(width: 400)
+  PermissionErrorView(
+    mode: .problem,
+    store: .init(
+      initialState: .init(mode: .noAccessibilityPermission(.permissionError)),
+      reducer: UserInterface.init
+    )
+  )
+  .frame(width: 400)
 }

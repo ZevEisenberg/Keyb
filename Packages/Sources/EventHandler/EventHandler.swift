@@ -45,6 +45,10 @@ public final class EventHandler {
     // Intercept keyDown, keyUp, and flagsChanged events
     let mask: CGEventMask = 1 << CGEventType.keyDown.rawValue | 1 << CGEventType.keyUp.rawValue | 1 << CGEventType.flagsChanged.rawValue
 
+    // TODO: #53. If Keyb is removed from the Accessibility list while this tap is active, all
+    // keyboard and mouse input across the system stops until Keyb is killed. This callback keeps
+    // receiving key events, but they never reach apps. Mouse events aren't in `mask`, yet they
+    // stop too. No notification is posted for a removal, so nothing stops the tap.
     let callbackTrampoline: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, userInfo: UnsafeMutableRawPointer?) in
       guard let userInfo else {
         return Unmanaged.passRetained(event)
